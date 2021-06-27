@@ -1,0 +1,375 @@
+---
+title: 'Tutorial: Network Structure, Week 2'
+output: learnr::tutorial
+runtime: shiny_prerendered
+---
+
+  <!-- This will output solution html file 
+  pdf_document: -->
+  <!--   toc: yes -->
+  <!--   toc_depth: '3' -->
+  <!-- html_document: -->
+  <!--   toc: yes -->
+  <!--   toc_depth: 3 -->
+  <!--   toc_float: yes -->
+
+```{r setup, include=FALSE}
+library(learnr)
+knitr::opts_chunk$set(echo = TRUE)
+library(igraph)
+library(sna)
+library(network)
+load("Week2.rdata")
+tutorial_options(exercise.timelimit = 10)
+```
+
+##Introduction
+This tutorial will demonstrate several R commands used to describe aspects of network structure introduced in the Week 2 Lecture:
+
+* Dyads and Dyad Census
+* Triads and Triad Census
+* Network Transitivity and Clustering
+* Path Length & Geodesic
+* Component Structure and Membership
+
+We will be using two network analysis packages throughout the course: **igraph** and **statnet**. Each of the packages uses a slightly different network object format, and the network analysis commands in the package will only work on the correct format of network object. When possible, all examples will use commands with similar functionality from both the igraph package and the statnet suite. Generic indicators will be appended to the network object name to distinguish network objects in statnet and igraph format:
+
+Datasets used in this tutorial are the abbreviated Game of Thrones Book and Swiss Climate Influence datasets described in the data index for the course.
+
+- *climate.ig* - igraph network object
+- *climate.stat* - statnet network object
+
+The GoT book data were scraped from the 5 published books, and a tie indicates the number of times that two characters are mentioned within close proximity of each other. This abbreviated dataset consists only of characters who appear at least 10 times throughout the 5 books, and all ties between characters who co-occur in the text together fewer than 5 times were removed.
+
+- *gotbook.ig* - igraph network object
+- *gotbook.stat* - statnet network object
+
+##**Describe the Network Data**
+
+Review of Week 1. Exercise to describe both data sets, using Week 1 NetDescribe tutorial for guidance. 
+
+1. **List and inspect:** List the objects to make sure the datafiles are working properly:
+
+```{r ls, exercise=TRUE}
+#List the network objects currently available for use
+
+```
+
+```{r ls-solution}
+#List the network objects currently available for use
+ls()
+```
+
+2. **Network Size:** What is the size of the network? Use the commands from week 1 to inspect the vertices and edges (count) for each of the igraph objects, or print the network size for the statnet objects. Do this for both the `climate` and `gotbook` objects:
+
+```{r size, exercise=TRUE}
+#Find network size (vertex and edge count)
+
+```
+
+```{r size-solution}
+#Find network size (vertex and edge count): igraph
+vcount(climate.ig)
+ecount(climate.ig)
+
+vcount(gotbook.ig)
+ecount(gotbook.ig)
+
+#Find network size (vertex and edge count): statnet
+print(climate.stat)
+print(gotbook.stat)
+```
+
+3. **Network features**: Are these networks weighted, directed, and Bipartite?
+
+```{r features, exercise=TRUE}
+#Find network features (mode, direction, weights)
+```
+
+```{r features-solution}
+#Find network features: igraph
+is_bipartite(climate.ig)
+is_directed(climate.ig)
+is_weighted(climate.ig)
+
+is_bipartite(gotbook.ig)
+is_directed(gotbook.ig)
+is_weighted(gotbook.ig)
+
+#Alternatively, find network features: statnet
+print(climate.stat)
+print(gotbook.stat)
+```
+
+4. **Network Attributes**: Now, using commands from either statnet or igraph, list the vertex and edge attributes of the `climate` and `gotbook` network data. Be sure to use the correct network data format (and name) for the command you choose to use.
+
+```{r attributes, exercise=TRUE}
+#List network attributes (vertex and edge)
+```
+
+```{r attributes-solution}
+#List network attributes: igraph
+igraph::vertex_attr_names(climate.ig)
+igraph::edge_attr_names(climate.ig)
+igraph::vertex_attr_names(gotbook.ig)
+igraph::edge_attr_names(gotbook.ig)
+
+#List network attributes: statnet
+network::list.vertex.attributes(climate.stat)
+network::list.edge.attributes(climate.stat)
+network::list.vertex.attributes(gotbook.stat)
+network::list.edge.attributes(gotbook.stat)
+```
+
+##**Dyad Census**
+Let's try a full **dyad census**. This gives us the number of dyads where the relationship is:
+
+* Reciprocal (mutual), or `mut`
+* Asymmetric (non-mutual), or `asym`, and
+* Absent, or `null`
+
+If using an undirected graph, we will get a warning message using this, because it reports based on directed graphs. In an undirected graph, all edges are mutual and none are asymmetrical - but this distinction exists when ties are directed.
+
+```{r , echo=TRUE}
+#Classify all dyads in the network: igraph
+igraph::dyad.census(gotbook.ig)
+
+#Classify all dyads in the network: statnet
+sna::dyad.census(gotbook.stat)
+```
+
+Note that using the `igraph::` and `sna::` commands tells R to use the version of the `dyad.census()` command found in the igraph and statnet/sna package, respectively. Because some of the commands in the two packages have the same name, you may get an error message if you try to use a statnet command on an igraph object or vice versa. As you can see, the two commands return the same answer, but the statnet format is compact and easier to read and doesn't return a warning.
+
+###Exercise: Dyad Census
+
+Now, using commands from either statnet or igraph, conduct a dyad census of the "climate" network. Be sure to use the correct network data format (and name) for the command you choose to use.
+
+```{r dyad, exercise=TRUE}
+#Classify all dyads in the network
+
+```
+
+```{r dyad-solution}
+#Classify all dyads in the network: igraph
+igraph::dyad.census(climate.ig)
+
+#Classify all dyads in the network: statnet
+sna::dyad.census(climate.stat)
+```
+
+<!-- ##Reciprocity -->
+
+<!-- grecip -->
+
+<!-- edgewise is (m*2)/(m*2+a) -->
+<!-- dyadic is (m*2)/(m+a) -->
+<!-- dyadic-nonnull is (m)/(m+a) -->
+
+##**Triad Census**
+While it is easy to think of social networks as comprised of dyadic interactions, network scholars are more likely to describe the triad as the true building block of network structure. Dyadic interactions are always conducted in the shadow of one or more third parties that can shape the outcome, just like third party observers can influence which chicken wins a dyadic pecking order battle. The triad census provides a fundamental descriptive insight into the types of triads found in a particular dataset - refer to the lecture for more details on interpretation.
+
+```{r triad-example, echo=TRUE}
+#Classify all triads in the network: igraph
+igraph::triad_census(gotbook.ig)
+
+#Classify all triads in the network: statnet
+#note: omit the 'mode' option for a directed network
+sna::triad.census(gotbook.stat, mode="graph")
+```
+
+The results here are potentially misleading here in two ways . First, the GoT TV network is undirected, which makes igraph spit out an error message and (as expected) only give results for the four basic undirected triads. The statnet command allows us to indicate that the graph is undirected with the option `mode="graph"` and thus returns only the four undirected triads. The two commands provide the same answers, so directed networks are not a concern despite the warning message.
+
+Additionally, it appears that while the networks are weighted, the command essentially ignores the weights and provides a triad census that corresponds to one that we might expect if the network were unweighted. To confirm that this is the case, recall that there are $$\binom{n}{k}=\binom{298}{3}=\frac{298\times297\times296}{3\times2\times1}$$
+possible triads in a network. So if the possible combinations of $k=3$ vertices from the $n=298$ total network vertices is the same as the sum of the four triad types in the triad census, then the triad.census routines is working correctly.
+
+```{r triad-binary, echo=TRUE}
+#Calculate possible triads in network
+298*297*296/6
+
+#total number of all four triad types returned by triad census
+sum(sna::triad.census(gotbook.stat, mode="graph"))
+```
+
+We got a match, so the triad census is working ok for our weighted networks. If the number of triads still appears quite large, it is because some unordered triads are being counted multiple times (i.e., the results are much harder to interpret for undirected networks).
+
+###Exercise: Triad Census
+
+Now, using commands from either statnet or igraph, conduct a triad census of the `climate` network. Be sure to use the correct network data format (and name) for the command you choose to use.
+
+```{r triad climate, exercise=TRUE}
+#Classify all triads in the network
+
+```
+
+```{r triad climate-solution}
+#Classify all triads in the network: igraph
+igraph::triad.census(climate.ig)
+
+#Classify all triads in the network: statnet
+sna::triad.census(climate.stat)
+```
+
+##**Transitivity or Global Clustering**
+
+While a triad census is interesting, it is highly descriptive and we may want a shorter reference point to understand the level of transitivity in the network. **Transitivity** is a network-level statistic that captures the proption of connected triads in the network that are complete (all three possible links present), and varies between 0 and 1, with 0 meaning none of the connected triads are transitive and 1 meaning all connected triads are transitive. Note that there is a weighted network method (barret) available in `igraph::transivity()`, but not explored here. The Barret reference is provided, and see here for a discussion of [specialized routines for weighted networks.](https://toreopsahl.com/tnet/weighted-networks/clustering/)
+
+```{r, echo=TRUE}
+#get network transitivity: igraph
+transitivity(gotbook.ig)
+```
+
+###Exercise: Transitivity
+Now, compute the **global** transitivity of the climate network. Comparing results from the triad census to the overall transtivity measure, what have we learned about the network structure?
+
+```{r trans, exercise=TRUE}
+#get network transitivity
+
+```
+
+```{r trans-solution}
+#get global network transitivity: igraph
+transitivity(climate.ig)
+```
+
+Note that there is a also a command for transitivity in statnet/sna, `gtrans()` but that it is calculating a transitivity score based on an understanding of network structure rooted in hierarchy - it requires directed networks. Try calculating the hierarchical transitivity measure for the climate network using the `gtrans` command in statnet. 
+
+```{r gtrans, exercise=TRUE}
+#get hierarchical network transitivity:statnet
+
+```
+
+```{r gtrans-solution}
+#get hierarchical network transitivity: statnet
+gtrans(climate.stat)
+```
+
+Note, there are also methods for weighted networks available in `sna::gtrans()`, rank and correlation, along with the relevant references.
+
+##**Local Transivity or Clustering**
+As we will explore more in future weeks, actors may be affected by the level of transitivity within their local ego networks. **Local transitivity**, more commonly known as the **local clustering coefficient**, is a technical description of how many of your friends are also friends with each other - it is just the density of an ego network. Lets compare the transitivity of the local ego networks of Petyr Baelish, Jon Snow, and Daenerys Targaryen. Reminder: an inroduction to the R commands `[]` and `c()` is available in the RBasics tutorial (NOT YET AVAILABLE). 
+
+```{r, echo=TRUE}
+#Retrive a list of the three vertices we are interested in
+V(gotbook.ig)[c("Petyr Baelish","Jon Snow", "Daenerys Targaryen")]
+
+#check ego network transitivity: igraph
+transitivity(gotbook.ig, type="local", vids=V(gotbook.ig)[c("Petyr Baelish","Jon Snow", "Daenerys Targaryen")]) 
+
+```
+
+Note that the average of local transivity for all vertices in a graph is often described as the **average clustering coefficient**, while the global clustering coefficient is equivalent to the transitivity of the network. The transivity ratio places more emphasis on high degree nodes, while the average clustering coefficient of a network places more emphasis on low degree nodes. Compare the average clustering cofficient of the gotbook data to the transitivity ratio or global clustering coefficient.
+
+```{r, echo=TRUE}
+#get global clustering cofficient: igraph
+transitivity(gotbook.ig, type="global")
+##get average local clustering coefficient: igraph
+transitivity(gotbook.ig, type="average")
+
+```
+
+###Exercise: Local Clustering
+Compute the **local** clustering coefficient of three other vertices in the game of thrones network: Tyrion Lannister, Cersei Lannister and Arya Stark. What do the differences in values between these two vertices, and the example vertices say about these members of the network?
+
+```{r localtrans, exercise=TRUE}
+#check ego network transitivity: igraph
+
+```
+
+```{r localtrans-solution}
+#check ego network transitivity: igraph
+transitivity(gotbook.ig, type="local", vids=V(gotbook.ig)[c("Tyrion Lannister","Cersei Lannister", "Arya Stark")]) 
+```
+
+Now, try comparing the global clustering coefficient to the average local clustering coefficient for the climate network.
+
+```{r cluster, exercise=TRUE}
+#get global clustering cofficient: igraph
+
+#get average local clustering coefficient: igraph
+
+```
+
+```{r cluster-solution}
+#get global clustering cofficient: igraph
+transitivity(climate.ig, type="global")
+#get average local clustering coefficient: igraph
+transitivity(climate.ig, type="average")
+
+```
+
+##**ADVANCED: Path Length and Geodesic** 
+
+We often are interested in the shortest path, or distance, between two nodes. The `distances` command calculates the distances between two or more nodes. Note that `distances` roughly corresponds to the concept of '6 degrees of separation' when the network ties are binary or unweighted, but the interpretation is quite different when edges are weighted. *Note that we must manually tell igraph to ignore edge weights.*
+
+```{r, echo=TRUE}
+#Calculate distances between two nodes
+distances(gotbook.ig,"Petyr Baelish","Robb Stark")
+
+#Calculate distance using unweighted edges
+distances(gotbook.ig,"Petyr Baelish","Robb Stark", weights=NA)
+```
+
+We can also find all of the shortest paths between two characters in this network. These list the starting node (Bronn) and the ending node (Varys) with all nodes inbetween for each path. *The option `weights=NA` means that any available edge weights are ignored.*
+
+```{r, echo=TRUE}
+# list shortest paths between 2 nodes
+all_shortest_paths(gotbook.ig,"Bronn","Varys", weights=NA)$res
+```
+
+While this command is useful for isolating the distances between specific nodes, it is often more useful to use the concept of shortest path to describe the overall network structure. The following calculates the average path length in the network as a whole. At this point in time, igraph ignores edge weights when calculating average geodesic path length of the network.
+
+```{r, echo=TRUE}
+#find average shortest path for network
+average.path.length(gotbook.ig,directed=F)
+```
+
+Compare the results of the two previous commands. What can you learn?
+
+##**ADVANCED Component Structure and Membership**
+
+First, let's look at the network component structure. This gives a list with: membership by node, size of each component, and the total number of components.
+
+```{r, echo=TRUE}
+#What element are returned by components
+names(igraph::components(gotbook.ig))
+igraph::components(gotbook.ig)$no #Number of components
+igraph::components(gotbook.ig)$csize #Size of each component
+```
+
+We can see from this that there is one large component with 195 members, and 103 components with only one member. We can easily find out the names of all the isolates in this component structure. Based on the boundaries put on nodes and ties in this dataset, what sense can we make of isolates in this dataset?
+
+```{r, echo=TRUE}
+#retrieve the index of isolate nodes
+isolates(gotbook.stat)
+#subset vertex.names attribute to get names of isolates
+as.vector(gotbook.stat%v%'vertex.names')[c(isolates(gotbook.stat))]
+```
+
+###Exercise: Component Structure and Membership
+
+Now, let's do the same inspections for the climate data.
+Retrive the size of each component and the total number of components.
+
+```{r structure, exercise=TRUE}
+#get number of components
+
+#get size of each component
+
+```
+
+```{r structure-solution}
+igraph::components(climate.ig)$no #Number of components
+igraph::components(climate.ig)$csize #Size of each component
+```
+
+And now, analyze the isolates, if any.
+
+```{r isolates, exercise=TRUE}
+#retrieve the index of isolate nodes
+#subset vertex.names attribute to get names of isolates
+```
+
+```{r isolates-solution}
+#retrieve the index of isolate nodes
+isolates(climate.stat)
+```

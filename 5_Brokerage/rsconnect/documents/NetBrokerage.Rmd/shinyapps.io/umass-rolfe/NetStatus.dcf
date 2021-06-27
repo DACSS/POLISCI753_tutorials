@@ -1,0 +1,13 @@
+name: NetStatus
+title:
+username:
+account: umass-rolfe
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 736699
+bundleId: 1905407
+url: https://umass-rolfe.shinyapps.io/NetStatus/
+when: 1551332739.74799
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: NetBrokerageSolution.html|NetBrokerageSolution.Rmd|Week5DataPrep.R|NetBrokerage_files/figure-html/centralcorr-solution-1.png|NetBrokerage_files/figure-html/centralcorr-solution-2.png|NetBrokerage_files/figure-html/centralcorr-solution-3.png

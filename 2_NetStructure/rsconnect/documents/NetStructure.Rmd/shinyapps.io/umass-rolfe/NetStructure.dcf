@@ -1,0 +1,13 @@
+name: NetStructure
+title: NetStructure
+username:
+account: umass-rolfe
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 676321
+bundleId: 1847590
+url: https://umass-rolfe.shinyapps.io/NetStructure/
+when: 1548916743.33378
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: Icon|Week2DataPrep.R|Wk2AudreyDraft.Rmd

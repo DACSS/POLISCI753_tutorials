@@ -1,0 +1,315 @@
+---
+title: "Tutorial: Network Centrality, Week 4"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 3
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+#library(learnr)
+#knitr::opts_chunk$set(echo = FALSE)
+library(igraph)
+library(statnet)
+library(tidyverse)
+load("Week4.rdata")
+#tutorial_options(exercise.timelimit = 10)
+```
+
+##**Introduction**
+
+This tutorial will demonstrate use of the R commands used to measure aspects of network status introduced in Week 4's Lecture:
+
+* Closeness centrality
+* Bonacich Power Centrality & Centralization
+* Eigenvector Centrality & Centralization 
+* Derived and Reflected Centrality & Centralization
+
+We will be using two datasets for this exercise. The first is the Game of Thrones Like-Dislike network. It is a small, weighted, directed network showing characters affinity for one another. The degree to which a character likes another is held by the "weight" attribute and ranges between -5 and 5.
+
+- *gotlike.ig* - igraph network object
+- *gotlike.stat* - statnet network object
+
+The second dataset is from the IMF, and a tie represents the value of a country's securities held by another country in 2014.
+
+- *imf2014.ig* - igraph network object
+- *imf2014.stat* - statnet network object
+
+##**Basic Network Description**
+
+Inspect the basic network descriptors for the `imf2014` network. For this exercise, refer to Week 1 tutorial. This will help you get familiar with the dataset you are using.
+
+Find network size, type (un/directed, un/weighted, bipartite) and available attributes of vertices and edges
+
+```{r describe, exercise=TRUE}
+#Find network size and type
+```
+
+##**Basic Network Structure**
+
+Inspect the dyads, triads, and component structure of the `imf2014` and `gotlike` networks (refer to tutorial 2):
+
+```{r structure, exercise=TRUE}
+#Dyad census, triad census, number and size of components, isolates
+```
+
+Create a dataframe with the in, out and total degree values of the network (refer to tutorial 3):
+
+```{r degree2, exercise=TRUE}
+#attach the in, out, and total degree values to the dataframe
+
+```
+
+```{r degree2-solution}
+#igraph version:
+
+imf2014.nodes<-data.frame(name=V(imf2014.ig)$name,
+    totdegree=igraph::degree(imf2014.ig, loops=FALSE),
+    indegree=igraph::degree(imf2014.ig, mode="in", loops=FALSE),
+    outdegree=igraph::degree(imf2014.ig, mode="out", loops=FALSE))
+
+#statnet version:
+
+imf2014.nodes<-data.frame(name=imf2014.stat%v%"vertex.names",
+    totdegree=sna::degree(imf2014.stat),
+    indegree=sna::degree(imf2014.stat, cmode="indegree"),
+    outdegree=sna::degree(imf2014.stat, cmode="outdegree"))
+```
+
+And do the same for the Game of Thrones data:
+
+```{r degree3, exercise=TRUE}
+#attach the in, out, and total degree values to the dataframe
+
+```
+
+View the top 5 values of your new dataframe:
+
+```{r degrees, exercise=TRUE}
+
+```
+
+```{r degrees-solution}
+head(imf2014.nodes)
+head(gotlike.nodes)
+
+```
+
+##**Eigenvector Centrality**
+
+We can use a basic igraph command to calculate the eigenvector centrality.
+```{r , echo=TRUE}
+    centr_eigen(imf2014.ig,directed=T)
+```
+
+This outputs a list of results: let's look at a few relevant ones, the eigenvector centrality score for each node and the graph level eigenvector centrality score. 
+```{r , echo=TRUE}
+eigen<-centr_eigen(imf2014.ig,directed=T)
+eigen$vector
+eigen$centralization
+```
+    
+Update to include naming of eigen.vector in results in a table, and call the top 5 values:
+
+```{r, echo=TRUE}
+imf.eigen<-cbind(eigen$vector,V(imf2014.ig)$name)
+head(imf.eigen)
+```
+
+###Exercise: Eigenvector Centrality
+Create a similar table of the eigenvector values for the `gotlike` dataset. Begin by creating an element called `got.eigen` in your R environment with the eigenvector calculations, then attach the names from the gotlike.ig dataset.
+
+```{r eigen, exercise=TRUE}
+
+```
+
+```{r eigen-solution}
+got.eigen<-centr_eigen(gotlike.ig,directed=T) #creates a data element of the eigenvector values
+gotlike.eigen<-cbind(got.eigen$vector,V(gotlike.ig)$name) #attach the names from the original dataset
+head(gotlike.eigen) #view the top 5 values
+
+```
+
+
+
+##**Bonacich Power Centrality**
+
+Now, let's try calculating the bonacich power centrality score. This gives us the bonacich power score for each node. Note: For this tutorial, the evaluate option is shut off so not to overload with data. 
+
+```{r, echo=TRUE, eval=FALSE}
+power_centrality(imf2014.ig)
+```
+
+We can also rescale this such that all of the scores add to 1. Doing this []
+```{r, echo=TRUE, eval=FALSE}
+power_centrality(imf2014.ig,rescale=T)
+```
+
+A good way to view this data without overloading would be to create an object that holds it, and view the `head` of the element:
+
+```{r, echo=TRUE, eval=TRUE}
+imf2014.BPC<-power_centrality(imf2014.ig,rescale=T)
+head(imf2014.BPC)
+```
+
+
+###Exercise: Bonacich Power Centrality
+
+Do the same for the `gotlike` dataset:
+
+```{r bonacich, exercise=TRUE}
+
+```
+
+```{r bonacich-solution}
+gotlike.BPC<-power_centrality(gotlike.ig,rescale=T)
+head(gotlike.BPC)
+```
+
+##**Derived and Reflected Centrality**
+
+To calculate the **derived** and **relected** centrality scores, we need to run some operations on the adjacency matrix. Remember that these two scores make up the entire calculation of the Eigenvector centrality score. 
+
+```{r, echo=TRUE}
+imf2014_adjacency<-as.matrix(as_adjacency_matrix(imf2014.ig, attr="weight"))
+```
+
+Matrix to 2nd power for two step derived/reflected centrality measurement.
+
+```{r, echo=TRUE}
+imf2014_adjacency_2<-imf2014_adjacency %*% imf2014_adjacency
+```
+
+Calculate the proportion of reflected centrality.
+
+```{r, echo=TRUE}
+rc<-diag(as.matrix(imf2014_adjacency_2))/rowSums(as.matrix(imf2014_adjacency_2))
+rc<-ifelse(is.nan(rc),0,rc)
+head(rc)
+```
+
+Calculate the proportion of derived centrality.
+
+```{r, echo=TRUE}
+  dc<-1-diag(as.matrix(imf2014_adjacency_2))/rowSums(as.matrix(imf2014_adjacency_2))
+  dc<-ifelse(is.nan(dc),1,dc)
+head(dc)
+```
+
+##**Compare Centrality Scores**
+In Tutorial 3, we made a dataframe of the in, out and total degree values for that week's dataset's nodes. For a refresher, please refer to tutorial 3 and the dataframe building tutorial. 
+
+Let's build a data frame with all these centrality scores for each node. This will allow us to compare these values with ease. 
+
+```{r, echo=TRUE}
+centralityDF<-data.frame(id=1:vcount(imf2014.ig),
+                        name=V(imf2014.ig)$name,
+                        degree_all=igraph::degree(imf2014.ig),
+                        degree_in=igraph::degree(imf2014.ig,mode="in"),
+                        degree_out=igraph::degree(imf2014.ig,mode="out"),
+                        degree_norm=igraph::degree(imf2014.ig,normalized=T),
+                        EV_cent=centr_eigen(imf2014.ig,directed = T)$vector,
+                        BC_power=power_centrality(imf2014.ig),
+                        reflect_EV=rc*centr_eigen(imf2014.ig,directed = T)$vector,
+                        derive_EV=dc*centr_eigen(imf2014.ig,directed = T)$vector)
+    
+row.names(centralityDF)<-NULL
+head(centralityDF)
+```
+
+Let's look at the distributions of these scores.
+```{r, echo=TRUE}
+attach(centralityDF)
+breaks<-round(vcount(imf2014.ig)/20)
+hist(degree_all,breaks=breaks,
+     main=paste("Distribution of Total Degree Scores in ",sep=""),
+     xlab="Total Degree Score")
+hist(degree_in,breaks=breaks,
+     main=paste("Distribution of In-Degree Scores in ",sep=""),
+     xlab="In-Degree Score")
+hist(degree_out,breaks=breaks,
+    main=paste("Distribution of Out-Degree Scores in ",sep=""),
+     xlab="Out-Degree Score")
+hist(degree_norm,breaks=breaks,
+     main=paste("Distribution of Normalized Degree Scores in ",sep=""),
+     xlab="Normalized Degree Score")
+hist(EV_cent,breaks=breaks,
+     main=paste("Distribution of Eigenvector Centrality Scores in ",sep=""),
+    xlab="Eigenvector Centrality Score")
+hist(BC_power,breaks=breaks,
+     main=paste("Distribution of Bonacich Power Scores in ",sep=""),
+     xlab="Bonacich Power Score")
+```
+
+
+Do any of them have clear bivariate patterns?
+```{r, echo=TRUE}
+plot(degree_in,degree_out) #Bivariate plot (x,y)
+abline(lm(degree_out~degree_in),col="red") #Fit a regression line (y~x)
+cor(degree_in,degree_out) #Get the bivariate correlation coefficient 
+
+plot(degree_all,degree_norm)
+abline(lm(degree_norm~degree_all),col="red")
+cor(degree_all,degree_norm)
+
+plot(degree_norm,EV_cent)
+abline(lm(EV_cent~degree_norm),col="red")
+cor(degree_all,EV_cent)
+
+plot(BC_power,EV_cent)
+abline(lm(EV_cent~BC_power),col="red")
+cor(BC_power,EV_cent)
+
+plot(reflect_EV,derive_EV)
+abline(lm(derive_EV~reflect_EV),col="red")
+cor(derive_EV,reflect_EV)
+    
+detach(centralityDF) #Always remember to detach an object after attaching it!
+```    
+
+Let's look at the correlations between all scores now.
+```{r, echo=TRUE}
+names(centralityDF) #Find the columns we want to run the correlation on
+cols<-c(3:10) #All except the id and name in this instance
+corMat<-cor(centralityDF[,cols],use="complete.obs") #Specify those in the bracket
+corMat #Let's look at it, which variables are most strongly correlated?
+```
+
+We can make pretty visualizations of the correlation matrix, too#
+```{r message=FALSE, warning=FALSE}
+library(corrplot)
+    
+corrplot(corMat) #Check the plots window to your right!
+```
+
+###Exercise: Compare Centrality Scores
+
+And now, we will analyze specific nodes and centralization scores in the `imf2014` dataset. For this exercise, you'll have to use tutorial 3 to answer the assignment questions related to the scores for specific nodes:
+
+**Hint:** Use the `arrange` function, piped through the `slice` function to arrange and slice by the highest centrality score values. In the Week 3 Tutorial, the rows were called `indegree`, `outdegree` and `totdegree`. For this dataframe, our columns are:
+
+* degree_all (total degree)
+* degree_in (in degree value)
+* degree_out (out degree value)
+* degree_norm (normalized degree value)
+* EV_cent (Eigenvector centrality)
+* BC_power (Bonacich Power Centrality)
+* reflect_EV (Reflected Eigenvector centrality)
+* derive_EV (Derived Eigenvector centrality)
+
+In order to call specific rows, you'll need to know their ID numbers. Working through actual R, this would be easy to find. For the assignment questions and the tutorial, we will be referring to Row 11 Italy, Row 7 Belgium, and Row 2 Costa Rica. To call them use the following line of code, replacing the numbers for the rows:
+
+```{r, echo=TRUE, eval=FALSE}
+centralityDF[00,]
+```
+
+
+Use this space for computing the answers to the assignment questions:
+
+```{r centralitycompare, exercise=TRUE}
+
+```
+
+
+

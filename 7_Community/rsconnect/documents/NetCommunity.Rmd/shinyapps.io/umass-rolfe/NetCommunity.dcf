@@ -1,0 +1,13 @@
+name: NetCommunity
+title: NetCommunity
+username:
+account: umass-rolfe
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 809594
+bundleId: 1964532
+url: https://umass-rolfe.shinyapps.io/NetCommunity/
+when: 1553563658.85758
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .Rhistory (1)|NetCommunitySolution.Rmd|Week7DataPrep.R

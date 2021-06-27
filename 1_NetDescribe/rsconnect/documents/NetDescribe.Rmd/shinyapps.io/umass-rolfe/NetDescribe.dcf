@@ -1,0 +1,13 @@
+name: NetDescribe
+title: NetDescribe
+username:
+account: umass-rolfe
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 658141
+bundleId: 1827934
+url: https://umass-rolfe.shinyapps.io/NetDescribe/
+when: 1548114184.74394
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .RData|Icon|Week1_data_transformation.R|Week1DataPrep.R

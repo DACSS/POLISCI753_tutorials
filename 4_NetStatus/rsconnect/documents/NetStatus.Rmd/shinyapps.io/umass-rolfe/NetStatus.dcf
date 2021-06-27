@@ -1,0 +1,13 @@
+name: NetStatus
+title: NetStatus
+username:
+account: umass-rolfe
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 736699
+bundleId: 1906728
+url: https://umass-rolfe.shinyapps.io/NetStatus/
+when: 1551374475.4161
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: NetStatusSolution.Rmd|NetStatusSolutions.html|Week4DataPrep.R

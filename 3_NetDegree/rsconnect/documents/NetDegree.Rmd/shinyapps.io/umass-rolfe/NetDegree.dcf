@@ -1,0 +1,13 @@
+name: NetDegree
+title: NetDegree
+username:
+account: umass-rolfe
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 693152
+bundleId: 1862236
+url: https://umass-rolfe.shinyapps.io/NetDegree/
+when: 1549557241.28496
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: Icon|NetDegreeSolution.html|NetDegreeSolution.Rmd|Week3DataPrep.R|NetDegree_files/Icon|NetDegree_files/figure-html/Icon
