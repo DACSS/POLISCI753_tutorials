@@ -19,7 +19,7 @@ knitr::opts_knit$set(global.par = TRUE)
 par(mar=c(1,1,1,1))
 ```
 
-##**Introduction**
+## **Introduction**
 
 This tutorial will demonstrate use of the R commands used in community detection algorithms, as introduced in Week 7's Lecture. We will look at five possible steps in a community analysis:
 
@@ -40,9 +40,9 @@ We will introduce several different community detection algorithms:
 
 In addition to the Florentine marriages dataset used for the examples, this tutorial includes access to the GoT marriage network and two airport networks: one is weighted based on distance between the airports (*airports.geo...*) and the other is weighted based on the number of flights between two airports (*airports.fl...*). The edge attribute is called "weight"" for the igraph networks, but has a distinct name in the statnet networks. The airport networks are not perfectly symmetric for some unknown reason, and thus read in as directed networks. There is also a network created from alliances data in Correlates of War, *alliances.ig* and *alliances.stat*.
 
-##**Basic Network Description**
+## **Basic Network Description**
 
-###1. Inspect basic **network descriptors** 
+### 1. Inspect basic **network descriptors** 
 Inspect the network attributes of the `airports.fl.stat` and `airports.geo.stat` networks. For this exercise, refer to Week 1 tutorial. This will help you get familiar with the dataset you are using.
 
 Find network size, type (un/directed, un/weighted, bipartite) and available attributes of vertices and edges
@@ -60,7 +60,7 @@ print(flomarr.stat)
 print(gotmarr.stat)
 ```
 
-###2. Inspect the Network Structure
+### 2. Inspect the Network Structure
 Inspect the **dyads, triads, and component structure** of the `airports.fl.stat` and `airports.geo.stat` networks. Pay attention to whether network is connected, as it affects the otions you use for closeness centrality.
 
 ```{r structure, exercise=TRUE}
@@ -147,7 +147,7 @@ gotmarr.nodes<-data.frame(name=gotmarr.stat%v%"vertex.names",
 gotmarr.nodes<-full_join(gotmarr.nodes,get.eigen(gotmarr.stat, "weight"), by="name")
 ```
 
-##**Fast and Greedy Community Detection**
+## **Fast and Greedy Community Detection**
 
 This method tries to detect particularly dense subgraphs by optimizing modularity scores. (See http://www.arxiv.org/abs/cond-mat/0408187) It is often tried first for simplicity because it has no parameters to tune. This algorithm is part of the igraph package, and thus you must specify an igraph object. It only works on undirected graphs, or directed graphs must be converted to undirected.
 
@@ -168,7 +168,7 @@ In order to see a complete list of which nodes belong to which clusters, we can 
 igraph::groups(comm.fg)
 ```
 
-###Exercise: Community cluster
+### Exercise: Community cluster
 Now, using one of the other networks provided this week, try running the fast, greedy algorithm to partition the network into communities and then retrieve the list of vertex names in each community. Note that if the network is directed, you will need to call the function `as.undirected()` in order to get this function to work.
 
 ```{r cluster, exercise=TRUE}
@@ -193,7 +193,7 @@ airports.geo.fg<-cluster_fast_greedy(as.undirected(airports.geo.ig))
 igraph::groups(airports.geo.fg)
 ```
 
-##Inspect Community Density
+## Inspect Community Density
 
 The substantive goal of community detection is often to identify groups of nodes with a higher density of ties within communities than between communities. The easiest way to quickly calculate the density of ties within and between communities is to use the `blockmodel` funciton and simply provide the community membership vector in place of a clustering object. 
 
@@ -206,7 +206,7 @@ blockmodel(flomarr.stat,comm.fg$membership)$block.model
 print(blockmodel(flomarr.stat,comm.fg$membership)$block.model, digits=2)
 ```
 
-###Exercise: Community density
+### Exercise: Community density
 
 Using the same network in the previous step, try using the`blockmodel` command to print the density of ties within and between community groups. Feel free to use only a single command that produces output you find acceptable (i.e., you only need to use one of the commands from the previous R example syntax.) Do the community clusters work as intended?
 
@@ -227,7 +227,7 @@ print(blockmodel(airports.fl.stat,airports.fl.fg$membership)$block.model, digits
 print(blockmodel(airports.geo.stat, airports.geo.fg$membership)$block.model, digits=2)
 ```
 
-##Adding Community Membership to Node Info
+## Adding Community Membership to Node Info
 
 In order to work with the community clusters produced in the initial step, it is convenient to extract the membership vector and add it into our standard `network.nodes` dataframe. First, let's inspect the community memberships, comparing the results to the vertex names stored in the object and the results of the `membership` function.
 
@@ -279,7 +279,7 @@ Now, we can use a single command to produce a summary table of node statistics.
 nodes.by.gp(flomarr.nodes,"comm.fg")
 ```
 
-###Exercise: Add Node Info
+### Exercise: Add Node Info
 
 Try adding on the community membership vector as a node attribute and summarizing node statistics by community. If you have forgotten which nodes belong to each community group, use the command provided in step 1 to retrieve node names.
 
@@ -309,7 +309,7 @@ nodes.by.gp(airports.geo.nodes,"comm.fg")
 
 ```
 
-##Plot the Network with Community Colors
+## Plot the Network with Community Colors
 
 Igraph has a built-in function to color nodes by community that doesn't require the researcher to add the membership vector to the network as a vertex attribute. To automatically color nodes by community membership, simply include the `community` object in the plotting call as follows.
 
@@ -318,7 +318,7 @@ Igraph has a built-in function to color nodes by community that doesn't require 
 plot(comm.fg,flomarr.ig)
 ```
 
-###Exercise: Plot Network With Community Coloring
+### Exercise: Plot Network With Community Coloring
 
 Using the clustering object created in step 1, plot the network with community coloring.
 
@@ -335,7 +335,7 @@ plot(airports.fl.fg,airports.fl.ig)
 plot(airports.geo.fg,airports.geo.ig)
 ```
 
-##**Walktrap Community Detection**
+## **Walktrap Community Detection**
 This algorithm detects communities based on random walks across the network. It can handle a weights argument, which makes it a good tool for weighted networks. Higher weights increase the probability that a random walker goes in that direction vs the direction of a tie with a lower weight.
 
 ```{r}
@@ -373,7 +373,7 @@ Finally, lets try plotting the network with walktrap community coloring.
 plot(comm.wt,flomarr.ig)
 ```
 
-###Exercise: Walk Trap
+### Exercise: Walk Trap
 
 Repeat all of the above steps for one of the other datasets provided this week.
 
@@ -428,7 +428,7 @@ nodes.by.gp(airports.geo.nodes,"comm.wt")
 plot(airports.geo.wt,airports.geo.ig)
 ```
 
-##Compare Community Partitions
+## Compare Community Partitions
 
 How different are the community clusters that were created using this method? It is possible to manually compare the block densities within and between the community groups, compare the average node statistics in the resulting communities, or visually inspect the colored network plots. One alternative approach is to directly compare the modularity index produced by each partition.
 
@@ -494,7 +494,7 @@ Once the `compare.algs()` function is set up, all you need to do is provide it w
 compare.algs(alg.a=c("comm.fg"),alg.b="comm.wt")
 ```
 
-###Exercise: Compare two partitions
+### Exercise: Compare two partitions
 
 Compare the fast, greedy partition to the walktrap partition you created using your chosen network. How similar are the two partitions, particularly in comparison to the similarity that we observed in the community partitions of the Florentine marriage network or some other network you have inspected?
 
@@ -532,7 +532,7 @@ compare.algs(alg.a=c("airports.geo.fg"),alg.b="airports.geo.wt")
 
 ```
 
-##**Leading Label Propagation Community Detection**
+## **Leading Label Propagation Community Detection**
 
 Label propogation is a fast algorithm that uses neighborhood voting to find communities. It can used weighted networks if you have a `weight` edge attribute or use the options `weights=`.
 
@@ -566,7 +566,7 @@ mods
 compare.algs(alg.a=c("comm.fg","comm.wt"),alg.b="comm.lab")
 ```
 
-###Exercise: Leading Label Propagation
+### Exercise: Leading Label Propagation
 
 Repeat the basic community analysis routine for one of the other datasets provided this week. 
 
@@ -643,7 +643,7 @@ compare.algs(alg.a=c("airports.geo.fg","airports.geo.wt"),alg.b="airports.geo.la
 
 ```
 
-##**Edge Betweenness Community Detection**
+## **Edge Betweenness Community Detection**
 
 Edge betweenness looks for communities with sparse connections between them and works by eliminating high betweenness nodes. It can used weighted networks if you have a `weight` edge attribute or use the options `weights=`. The algorithm automatically adjusts betweenness scores for directed networks, although this can be adjusted by setting the option `directed=FALSE`.
 
@@ -677,7 +677,7 @@ mods
 compare.algs(alg.a=c("comm.fg","comm.wt", "comm.lab"), alg.b="comm.edge")
 ```
 
-###Exercise: Edge Betweenness
+### Exercise: Edge Betweenness
 
 Repeat the basic community analysis routine for one of the other datasets provided this week. 
 
@@ -754,7 +754,7 @@ compare.algs(alg.a=c("airports.geo.fg","airports.geo.wt", "airports.geo.lab"), a
 
 ```
 
-##**Eigenvector Community Detection**
+## **Eigenvector Community Detection**
 
 The leading eigenvector community detection method is based on the eigenvectors of the modularity matrix of the network. It has a few options such as `steps` and `start` that might be useful, but are not typically used. A weighted network can be used with the standards `weights` opton or an appropriately named "weights" edge attribute.
 
@@ -788,7 +788,7 @@ mods
 compare.algs(alg.a=c("comm.fg","comm.wt", "comm.lab", "comm.edge"), alg.b="comm.eigen")
 ```
 
-###Exercise: Eigenvector Communities
+### Exercise: Eigenvector Communities
 
 Repeat the basic community analysis routine for one of the other datasets provided this week. 
 
@@ -865,7 +865,7 @@ compare.algs(alg.a=c("airports.geo.fg","airports.geo.wt", "airports.geo.lab", "a
 
 ```
 
-##**Spinglass Community Detection**
+## **Spinglass Community Detection**
 
 If we ran this algoritm on our entire network, we would get an error. This algorithm doesn't work with a disconnected graphs! Let's run it on a connected component subgraph. We first need to create a custom function to extract the giant component.
 ```{r}
@@ -909,7 +909,7 @@ mods
 #compare community partitions - not connected
 ```
 
-###Exercise: Spinglass Community Detection
+### Exercise: Spinglass Community Detection
 
 Repeat the basic community analysis routine for one of the other datasets provided this week. 
 
