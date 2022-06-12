@@ -13,7 +13,7 @@ load("Week1.rdata")
 tutorial_options(exercise.timelimit = 10)
 ```
 
-##**Introduction**
+## Introduction
 This tutorial will demonstrate use of the R commands used to identify critical aspects of network data introduced in Week 1's Lecture:
 
 * Vertex and edge counts
@@ -29,88 +29,89 @@ These network features are critical to identify because many network analysis te
 We will be using two network analysis packages throughout the course: **igraph** and **statnet**. (Statnet is technically a suite of network packages that are designed to work together, including **network** for creating statnet objects and **sna** for basic network analysis.) Each of the packages uses a slightly different network object format, and the network analysis commands in the package will only work on the correct format of network object. When possible, all tutorial examples will use commands with similar functionality from both the igraph package and the statnet suite. Generic indicators will be appended to the network object name to distinguish network objects in statnet and igraph format. 
 
 Datasets used in this tutorial are the Karate and USAirport datasets described in the igraphdata package. 
+
 - *airport.ig* - igraph network object
 - *airport.stat* - statnet network object
 
 - *karate.ig* - igraph network object
 - *karate.stat* - statnet network object
 
-##**Network Data in Environment**
+## Network Data in Environment
 
-Ordinarily, the first step in any data analysis exercise is to load the data, clean it up, and transform it into the correct object type for analysis. To make the tutorial more accessible, we will be working with pre-cleaned and pre-loaded datasets. To confirm that all four of the specificed datasets are available for us, we can use the `ls()` command with no options. 
+Ordinarily, the first step in any data analysis exercise is to load the data, clean it up, and transform it into the correct object type for analysis. To make the tutorial more accessible, we will be working with pre-cleaned and pre-loaded datasets. To confirm that all four of the specified datasets are available for us, we can use the `ls()` command with no options. 
 
 Try it now. Just type the command `ls()` in the box below and then hit the `Run Code` button.
 
-###Exercise: List Objects
+### Exercise: List Objects
 
 ```{r ls, exercise=TRUE}
-#List the network objects currently available for use
+# List the network objects currently available for use
 
 ```
 
 ```{r ls-solution}
-#List the network objects currently available for use
+# List the network objects currently available for use
 ls()
 ```
 
-##**Network Size**
+## Network Size
 
 When we first start working with network data, we may not know much about the dataset or may want to confirm that the data read in correctly by comparing it to some basic descriptive facts. Lets start by finding the size of the network, both the number of nodes and the number of edges.
 
 ```{r, echo=TRUE}
-#Count of vertices: igraph
+# Count of vertices: igraph
 vcount(karate.ig)
-#Count of edges: igraph
+# Count of edges: igraph
 ecount(karate.ig)
 
-#Count of both vertices and edges: statnet
+# Count of both vertices and edges: statnet
 print(karate.stat)
 ```
 
-Note that the print command on a statnet graph gives a very clean summary of almost all network features we are interested in. Although igraph is typically considered easier to use, you only need to remember one command in statnet to get a complete summary of your available data. The `print()` command can be used on an igrah network, but it is much more difficult to interpret and is missing much of the information returned by `print()` on a statnet network. 
+Note that the print command on a statnet graph gives a very clean summary of almost all network features we are interested in. Although igraph is typically considered easier to use, you only need to remember one command in statnet to get a complete summary of your available data. The `print()` command can be used on an igraph network, but it is much more difficult to interpret and is missing much of the information returned by `print()` on a statnet network. 
 
 To see the difference, try the `print()` command on the karate data in igraph format. Remember to hit `Run Code` after entering the command in the box below.
 
 ```{r printig, exercise=TRUE}
-#igraph equivalent of statnet::print()
+# igraph equivalent of statnet::print()
 
 ```
 
 ```{r printig-solution}
-#igraph equivalent of statnet::print()
+# igraph equivalent of statnet::print()
 print(karate.ig)
 ```
 
-###Exercise: Network Size
+### Exercise: Network Size
 
 Now, using commands from either statnet or igraph, find the network size of the "airports" network data. Be sure to use the correct network data format (and name) for the command you choose to use.
 
 ```{r size, exercise=TRUE}
-#Find network size (vertex and edge count)
+# Find network size (vertex and edge count)
 
 ```
 
 ```{r size-solution}
-#Find network size (vertex and edge count): igraph
+# Find network size (vertex and edge count): igraph
 vcount(airport.ig)
 ecount(airport.ig)
 
-#Find network size (vertex and edge count): statnt
+# Find network size (vertex and edge count): statnet
 print(airport.stat)
 ```
 
-##**Weighted, Directed, Bipartite?**
+## Weighted, Directed, Bipartite?
 
 As we saw in the last exercise, statnet `print()` command provides a description of several critical network features:
 
-* Is this a Bipartite or single mode network?
+* Is this a bipartite or single mode network?
 * Are edges directed or undirected?
 * Are edges weighted or unweighted?
 
 The following igraph commands can be used to answer the same questions.  
 
 ```{r, echo=TRUE}
-# Is this a Bipartite or single mode network?
+# Is this a bipartite or single mode network?
 is_bipartite(karate.ig)
 #  Are edges directed or undirected?
 is_directed(karate.ig)
@@ -118,131 +119,131 @@ is_directed(karate.ig)
 is_weighted(karate.ig)
 ```
 
-###Exercise: Network Features
+### Exercise: Network Features
 
 Now, using commands from either statnet or igraph, find the relevant features of the "airports" network data. Be sure to use the correct network data format (and name) for the command you choose to use.
 
 ```{r features, exercise=TRUE}
-#Find network features (mode, direction, weights)
+# Find network features (mode, direction, weights)
 
 ```
 
 ```{r features-solution}
-#Find network features: igraph
+# Find network features: igraph
 is_bipartite(airport.ig)
 is_directed(airport.ig)
 is_weighted(airport.ig)
 
-#Find network features: statnet
+# Find network features: statnet
 print(airport.stat)
 ```
 
-##**Vertex and Edge Attributes**
+## Vertex and Edge Attributes
 You may have noticed that the `print()` command in both packages returned a list of vertex and edge attributes available in the dataset. These attributes are the equivalent of variables in a traditional set, with the difference being that there can be additional variables about both the vertices and the edges in a network dataset. 
 
 A **vertex attribute** is a vector (or variable) of additional information about the nodes in a network dataset, such as the name, location, or other demographic information about the actors or organizations who comprise the vertices of the network. In case you have forgotten, we can quickly get a list of available vertex attributes. (Note: the statnet command is provided but is not run for simplicity.)
 
 ```{r, echo=TRUE}
-#display vertex attributes for igraph object
+# display vertex attributes for igraph object
 vertex_attr_names(karate.ig)
 
-#display vertex attributes for statnet object
-#network::list.vertex.attributes(karate.stat)
+# display vertex attributes for statnet object
+# network::list.vertex.attributes(karate.stat)
 ```
 
-An **edge attribute** is a vector (or variable) of additional information about the edges or relationships in a network dataset. The most common edge attribute is *weight*, in a weighted dataset. Other edge attributes encountered might be *year* of the relationship (e.g., when looking at trade or alliance data), *type* of relationship (e.g., marriage or parentage in family tree data, or mutual defense or non-agression in alliance data), or other attributes that can be used to characterize the relationships in the network. We can also quickly get a list of available edge attributes.
+An **edge attribute** is a vector (or variable) of additional information about the edges or relationships in a network dataset. The most common edge attribute is *weight*, in a weighted dataset. Other edge attributes encountered might be *year* of the relationship (e.g., when looking at trade or alliance data), *type* of relationship (e.g., marriage or parentage in family tree data, or mutual defense or non-aggression in alliance data), or other attributes that can be used to characterize the relationships in the network. We can also quickly get a list of available edge attributes.
 
 ```{r, echo=TRUE}
-#display edge attributes for igraph object
+# display edge attributes for igraph object
 edge_attr_names(karate.ig)
 
-#display edge attributes for statnet object
-#network::list.edge.attributes(karate.stat)
+# display edge attributes for statnet object
+# network::list.edge.attributes(karate.stat)
 ```
 
-###Exercise: List Network Attributes
+### Exercise: List Network Attributes
 
 Now, using commands from either statnet or igraph, list the vertex and edge attributes of the "airports" network data. Be sure to use the correct network data format (and name) for the command you choose to use.
 
 ```{r attributes, exercise=TRUE}
-#List network attributes (vertex and edge)
+# List network attributes (vertex and edge)
 
 ```
 
 ```{r attributes-solution}
-#List network attributes: igraph
+# List network attributes: igraph
 igraph::vertex_attr_names(airport.ig)
 igraph::edge_attr_names(airport.ig)
 
-#List network attributes: statnet
+# List network attributes: statnet
 network::list.vertex.attributes(airport.stat)
 network::list.edge.attributes(airport.stat)
 ```
 
-##**Accessing Attribute Data**
+## Accessing Attribute Data
 When we work with an R dataframe object, you can access a specific variable in the dataframe by using the `data$varname` or `$` command. You can work with network data in a similar way to access network attributes (or variables), but the specific command varies by whether you are accessing a vertex or edge attribute, as indicated.
 
 ```{r, echo=TRUE}
-#access vertex attribute: igraph
+# access vertex attribute: igraph
 V(karate.ig)$name
-#access edge attribute: igraph
+# access edge attribute: igraph
 E(karate.ig)$weight
 
-#access vertex attribute: statnet
+# access vertex attribute: statnet
 head(karate.stat %v% "vertex.names")
-#access edge attribute: statnet
+# access edge attribute: statnet
 head(karate.stat %e% "weight")
 ```
 
 The additional command, `head()`, used for the statnet example is very useful when you want to inspect the contents of a long vector of attribute data to get a sense of the content, but do not need to see a list of every value.
 
-###Exercise: Accessing Attribute Data
+### Exercise: Accessing Attribute Data
 Now, using commands from either statnet or igraph, access the vertex attribute "City" and the edge attribute "Carrier" in the "airports" network data. Be sure to use the correct network data format (and name) for the command you choose to use. You may want to use the `head()` command to shorten the lengthy output.
 
 ```{r getatt, exercise=TRUE, exercise.lines=4}
-#Access "City" vertex attribute
+# Access "City" vertex attribute
 
-#Access "Carrier" edge attribute
+# Access "Carrier" edge attribute
 
 ```
 
 ```{r getatt-solution}
-#Access "City" vertex attribute: igraph
+# Access "City" vertex attribute: igraph
 head(V(airport.ig)$City)
-#Access "Carrier" edge attribute: igraph
+# Access "Carrier" edge attribute: igraph
 head(E(airport.ig)$Carrier)
 
-#Access "City" vertex attribute: statnet
+# Access "City" vertex attribute: statnet
 head(airport.stat %v% "City")
-#Access "Carrier" edge attribute: statnet
+# Access "Carrier" edge attribute: statnet
 head(airport.stat %e% "Carrier")
 ```
 
-##**Describing Network Attributes**
+## Describing Network Attributes
 
 Any R commands that are ordinarily used to work with vector objects can also be used to work with network attribute data accessed using the techniques in the last step. This means that we can do useful things like sort lists of names using `sort()` or summarize numeric data using `summary()`. Here is an example of how to summarize numeric network attributes.
 
 ```{r, echo=TRUE}
-#summarize numeric network attribute: igraph
+# summarize numeric network attribute: igraph
 summary(E(karate.ig)$weight)
 
-#summarize numeric network attribute: statnet
+# summarize numeric network attribute: statnet
 summary(karate.stat %e% "weight")
 ```
 
-###Exercise: Summarize Network Attributes
+### Exercise: Summarize Network Attributes
 Using the airport data, summarize the numeric edge attribute "Passengers."
 
 ```{r summatt, exercise=TRUE}
-#summarize numeric network attribute
+# summarize numeric network attribute
 
 ```
 
 ```{r summatt-solution}
-#summarize numeric network attribute: igraph
+# summarize numeric network attribute: igraph
 summary(E(airport.ig)$Passengers)
 
-#summarize numeric network attribute: statnet
+# summarize numeric network attribute: statnet
 summary(airport.stat %e% "Passengers")
 ```
 
