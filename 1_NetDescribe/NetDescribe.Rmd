@@ -14,27 +14,28 @@ tutorial_options(exercise.timelimit = 10)
 ```
 
 ## Introduction
-This tutorial will demonstrate use of the R commands used to identify critical aspects of network data introduced in Week 1's Lecture:
+This tutorial will demonstrate use of the R commands used to identify and access critical aspects of network data introduced in Week 1's lecture:
 
-* Vertex and edge counts
-* Bipartite or single mode network
-* Directed or undirected edges
-* Weighted or unweighted edges
-* Identify available vertex and edge attributes
-* Access vertex and edge attributes
-* Describe vertex and edge attributes
+* Network size (vertex and edge counts)
+* Core network attributes (single / bipartite; directed / undirected; weighted / unweighted, etc)
+* Custom edge and vertex attributes
 
-These network features are critical to identify because many network analysis techniques require a specific type of data. For example, some structural equivalence techniques require binary or unweighted edges, while Gould-Fernandez brokerage scores require directed edges and additional node attributes.
+Core network features are critical to identify because many network analysis techniques require a specific type of data. For example, some network analysis techniques require binary or unweighted edges, while [Gould-Fernandez brokerage analysis](https://search.r-project.org/CRAN/refmans/sna/html/brokerage.html) (coming later in the term) requires directed edges and additional node attributes. 
 
-We will be using two network analysis packages throughout the course: **igraph** and **statnet**. (Statnet is technically a suite of network packages that are designed to work together, including **network** for creating statnet objects and **sna** for basic network analysis.) Each of the packages uses a slightly different network object format, and the network analysis commands in the package will only work on the correct format of network object. When possible, all tutorial examples will use commands with similar functionality from both the igraph package and the statnet suite. Generic indicators will be appended to the network object name to distinguish network objects in statnet and igraph format. 
+We will be using two network analysis packages throughout the course: **igraph** and **statnet**. (Statnet is technically a suite of network packages that are designed to work together, including **network** for creating statnet objects and **sna** for basic network analysis.) While there is a significant degree of functional overlap between the two packages, each uses its own network object format, and the network analysis commands in the package will only work on the correct format of network object. When possible, all tutorial examples will use commands with similar functionality from both the igraph package and the statnet suite. Network objects in the tutorials use a suffix to indicate their type (".ig" for igraph, ".stat" for statnet).
 
-Datasets used in this tutorial are the Karate and USAirport datasets described in the igraphdata package. 
+This tutorial uses the Karate and USAirport datasets provided by the [igraphdata package](https://github.com/igraph/igraphdata). 
 
 - *airport.ig* - igraph network object
 - *airport.stat* - statnet network object
-
 - *karate.ig* - igraph network object
 - *karate.stat* - statnet network object
+
+(Note: if you wish to explore these datasets in your own R environment, you may install the igraphdata package with the following command:)
+
+```r
+install.packages("igraphdata")
+```
 
 ## Network Data in Environment
 
