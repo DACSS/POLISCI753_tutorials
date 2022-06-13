@@ -189,21 +189,31 @@ ls()</code></pre>
 <div id="section-network-size" class="section level2">
 <h2>Network Size</h2>
 <p>When we first start working with network data, we may not know much
+<<<<<<< HEAD
 about the dataset, or we may want to confirm that the data was read in
 correctly by examining some basic descriptive attributes. Let’s start by
 finding the size of the network, as measured by the number of nodes and
 the number of edges.</p>
 <p>igraph provides the <code>vcount</code> and <code>ecount</code>
 functions for counting vertices (nodes) and edges, respectively:</p>
+=======
+about the dataset, or may want to confirm that the data was read in
+correctly by examining some basic descriptive attributes. Let’s start by
+finding the size of the network, as measured by the number of nodes and
+the number of edges.</p>
+>>>>>>> 415faa601dcf3ea252e35bd32ae885c77cfc93bc
 <pre class="r"><code># Count of vertices: igraph
 vcount(karate.ig)</code></pre>
 <pre><code>## [1] 34</code></pre>
 <pre class="r"><code># Count of edges: igraph
 ecount(karate.ig)</code></pre>
 <pre><code>## [1] 78</code></pre>
+<<<<<<< HEAD
 <p>statnet provides the <code>print</code> function, which outputs a
 block of network attributes, including the count of vertices and
 edges:</p>
+=======
+>>>>>>> 415faa601dcf3ea252e35bd32ae885c77cfc93bc
 <pre class="r"><code># Count of both vertices and edges: statnet
 print(karate.stat)</code></pre>
 <pre><code>##  Network attributes:
@@ -225,8 +235,19 @@ print(karate.stat)</code></pre>
 ## 
 ##  Edge attribute names: 
 ##     weight</code></pre>
+<<<<<<< HEAD
 <p>igraph objects can also be examined with <code>print()</code>, but
 the output is different. Try the <code>print()</code> command on the
+=======
+<p>Note that the print command on a statnet graph gives a very clean
+summary of almost all network features we are interested in. Although
+igraph is typically considered easier to use, you only need to remember
+one command in statnet to get a complete summary of your available data.
+The <code>print()</code> command can be used on an igraph network, but
+it is much more difficult to interpret and is missing much of the
+information returned by <code>print()</code> on a statnet network.</p>
+<p>To see the difference, try the <code>print()</code> command on the
+>>>>>>> 415faa601dcf3ea252e35bd32ae885c77cfc93bc
 karate data in igraph format. Remember to hit <code>Run Code</code>
 after entering the command in the box below.</p>
 <div class="tutorial-exercise" data-label="printig" data-caption="Code"
