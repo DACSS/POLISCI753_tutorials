@@ -57,19 +57,23 @@ ls()
 
 ## Network Size
 
-When we first start working with network data, we may not know much about the dataset or may want to confirm that the data read in correctly by comparing it to some basic descriptive facts. Lets start by finding the size of the network, both the number of nodes and the number of edges.
+When we first start working with network data, we may not know much about the dataset, or we may want to confirm that the data was read in correctly by examining some basic descriptive attributes. Let's start by finding the size of the network, as measured by the number of nodes and the number of edges.
+
+igraph provides the `vcount` and `ecount` functions for counting vertices (nodes) and edges, respectively:
 
 ```{r, echo=TRUE}
 # Count of vertices: igraph
 vcount(karate.ig)
 # Count of edges: igraph
 ecount(karate.ig)
+```
 
+statnet provides the `print` function, which outputs a block of network attributes:
+
+```{r, echo=TRUE}
 # Count of both vertices and edges: statnet
 print(karate.stat)
 ```
-
-Note that the print command on a statnet graph gives a very clean summary of almost all network features we are interested in. Although igraph is typically considered easier to use, you only need to remember one command in statnet to get a complete summary of your available data. The `print()` command can be used on an igraph network, but it is much more difficult to interpret and is missing much of the information returned by `print()` on a statnet network. 
 
 To see the difference, try the `print()` command on the karate data in igraph format. Remember to hit `Run Code` after entering the command in the box below.
 
