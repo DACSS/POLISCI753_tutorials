@@ -186,23 +186,35 @@ network::list.edge.attributes(airport.stat)
 ```
 
 ## Accessing Attribute Data
-When we work with an R dataframe object, you can access a specific variable in the dataframe by using the `data$varname` or `$` command. You can work with network data in a similar way to access network attributes (or variables), but the specific command varies by whether you are accessing a vertex or edge attribute, as indicated.
+
+When working with an R dataframe object, you can access a specific variable in the dataframe with the `$` operator. igraph provides the `V()` and `E()` functions which return the vertices and edges, respectively, of the network object, and the `$` operator can be used to access their attributes, as shown below for vertex names and edge weights:
 
 ```{r, echo=TRUE}
 # access vertex attribute: igraph
 V(karate.ig)$name
 # access edge attribute: igraph
 E(karate.ig)$weight
+```
 
+The statnet equivalents of these functions are the `%v%` and `%e%` operators, which take the attribute name as an argument:
+
+```{r, echo=TRUE}
 # access vertex attribute: statnet
 head(karate.stat %v% "vertex.names")
 # access edge attribute: statnet
 head(karate.stat %e% "weight")
 ```
 
-The additional command, `head()`, used for the statnet example is very useful when you want to inspect the contents of a long vector of attribute data to get a sense of the content, but do not need to see a list of every value.
+Note: the `head()` command, used for the statnet examples, is very useful when you want to inspect the contents of a long vector of attribute data to get a sense of the content, but do not need to see a list of every value. By default, it shows the first 6 elements, as shown below with the 26-element `letters` vector built into R:
+
+```{r, echo=TRUE}
+letters
+head(letters)
+```
+
 
 ### Exercise: Accessing Attribute Data
+
 Now, using commands from either statnet or igraph, access the vertex attribute "City" and the edge attribute "Carrier" in the "airports" network data. Be sure to use the correct network data format (and name) for the command you choose to use. You may want to use the `head()` command to shorten the lengthy output.
 
 ```{r getatt, exercise=TRUE, exercise.lines=4}
@@ -226,7 +238,7 @@ head(airport.stat %e% "Carrier")
 
 ## Describing Network Attributes
 
-Any R commands that are ordinarily used to work with vector objects can also be used to work with network attribute data accessed using the techniques in the last step. This means that we can do useful things like sort lists of names using `sort()` or summarize numeric data using `summary()`. Here is an example of how to summarize numeric network attributes.
+Any R commands that are ordinarily used to work with vector objects can also be used to work with network attribute data accessed using the techniques in the last step. This means that we can do useful things like sort lists of names using `sort()` or summarize data using `summary()`. Here is an example of how to summarize network attributes.
 
 ```{r, echo=TRUE}
 # summarize numeric network attribute: igraph
@@ -237,6 +249,7 @@ summary(karate.stat %e% "weight")
 ```
 
 ### Exercise: Summarize Network Attributes
+
 Using the airport data, summarize the numeric edge attribute "Passengers."
 
 ```{r summatt, exercise=TRUE}
