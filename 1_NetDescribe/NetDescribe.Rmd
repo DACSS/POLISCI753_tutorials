@@ -69,7 +69,6 @@ ecount(karate.ig)
 ```
 
 statnet provides the `print` function, which outputs a block of network attributes, including the count of vertices and edges:
-=======
 
 ```{r, echo=TRUE}
 # Count of both vertices and edges: statnet
