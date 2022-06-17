@@ -5,12 +5,27 @@ runtime: shiny_prerendered
 ---
 
 ```{r setup, include=FALSE}
-library(learnr)
 knitr::opts_chunk$set(echo = FALSE)
+
+library(learnr)
+tutorial_options(exercise.timelimit = 10)
+
 library(igraph)
 library(statnet)
-load("Week1.rdata")
-tutorial_options(exercise.timelimit = 10)
+library(intergraph)
+# Load the two datasets directly from the igraphdata package
+# No need for additional processing in this tutorial.
+library(igraphdata)
+
+data("USairports")
+airport.ig <- USairports
+airport.stat <- asNetwork(USairports)
+rm(USairports)
+
+data("karate")
+karate.ig <- karate
+karate.stat <- asNetwork(karate)
+rm(karate)
 ```
 
 ## Introduction
