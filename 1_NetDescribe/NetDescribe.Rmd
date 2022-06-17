@@ -159,6 +159,7 @@ print(airport.stat)
 ```
 
 ## Vertex and Edge Attributes
+
 You may have noticed that the `print()` command in both packages returned a list of vertex and edge attributes available in the dataset. These attributes are the equivalent of variables in a traditional set, with the difference being that there can be additional variables about both the vertices and the edges in a network dataset. 
 
 A **vertex attribute** is a vector (or variable) of additional information about the nodes in a network dataset, such as the name, location, or other demographic information about the actors or organizations who comprise the vertices of the network. In case you have forgotten, we can quickly get a list of available vertex attributes. (Note: the statnet command is provided but is not run for simplicity.)
@@ -227,6 +228,24 @@ letters
 head(letters)
 ```
 
+Extra: If you want to capture network attributes from a statnet object in variables, many of them are programmatically accessible through the `gal` attribute. For example, the vertex count and count of edges can be accessed like this:
+
+```r
+karate_node_count <- karate.stat$gal$n
+karate_edge_count <- karate.stat$gal$mnext
+```
+
+To see all of the available attributes in a statnet object, reference the `gal` attribute in a terminal window. Use `$gal` to show the attributes of the `karate.stat` object below. 
+
+```{r printgal, exercise=TRUE}
+# Use $gal to see the attributes of the karate.stat object
+
+```
+
+```{r printgal-solution}
+# Use $gal to see the attributes of the karate.stat object
+karate.stat$gal
+```
 
 ### Exercise: Accessing Attribute Data
 
