@@ -5,3 +5,5 @@
 
 # shiny.io directory
 rsconnect/
+
+.DS_Store
