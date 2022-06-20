@@ -228,14 +228,14 @@ letters
 head(letters)
 ```
 
-Extra: If you want to capture network attributes from a statnet object in variables, many of them are programmatically accessible through the `gal` attribute. For example, the vertex count and count of edges can be accessed like this:
+Extra: If you want to capture network attributes from a statnet object in variables, many of them are programmatically accessible through the `gal` element. For example, the vertex count and count of edges can be accessed like this:
 
 ```r
 karate_node_count <- karate.stat$gal$n
 karate_edge_count <- karate.stat$gal$mnext
 ```
 
-To see all of the available attributes in a statnet object, reference the `gal` attribute in a terminal window. Use `$gal` to show the attributes of the `karate.stat` object below. 
+To see all of the available attributes in a statnet object, reference the `gal` element in a terminal window. Use `$gal` to show the attributes of the `karate.stat` object below. 
 
 ```{r printgal, exercise=TRUE}
 # Use $gal to see the attributes of the karate.stat object
