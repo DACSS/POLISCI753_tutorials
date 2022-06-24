@@ -187,12 +187,12 @@ We got a match, so the triad census is working ok for our weighted networks. If 
 
 Now, using commands from either statnet or igraph, conduct a triad census of the `climate` network. Be sure to use the correct network data format (and name) for the command you choose to use.
 
-```{r triad climate, exercise=TRUE}
+```{r triad_climate, exercise=TRUE}
 #Classify all triads in the network
 
 ```
 
-```{r triad climate-solution}
+```{r triad_climate-solution}
 #Classify all triads in the network: igraph
 igraph::triad.census(climate.ig)
 
