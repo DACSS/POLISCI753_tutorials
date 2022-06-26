@@ -2,7 +2,9 @@
 .Rhistory
 .RData
 .Ruserdata
-# shiny.io directory
+# deployment directory
 rsconnect/
+# ignore .html output files
+*.html
 
 .DS_Store
