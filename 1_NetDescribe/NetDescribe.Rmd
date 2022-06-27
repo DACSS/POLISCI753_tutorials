@@ -228,23 +228,11 @@ letters
 head(letters)
 ```
 
-Extra: If you want to capture network attributes from a statnet object in variables, many of them are programmatically accessible through the `gal` element. For example, the vertex count and count of edges can be accessed like this:
+Extra: If you want to capture network attributes from a statnet object in variables, rather than just printing them as output, they are available via other helper functions. For example, the count of vertices may be obtained via the `network.size()` function, and the edge count via the `network.edgecount()` function:
 
 ```r
-karate_node_count <- karate.stat$gal$n
-karate_edge_count <- karate.stat$gal$mnext
-```
-
-To see all of the available attributes in a statnet object, reference the `gal` element in a terminal window. Use `$gal` to show the attributes of the `karate.stat` object below. 
-
-```{r printgal, exercise=TRUE}
-# Use $gal to see the attributes of the karate.stat object
-
-```
-
-```{r printgal-solution}
-# Use $gal to see the attributes of the karate.stat object
-karate.stat$gal
+karate_node_count <- network.size(karate.stat)
+karate_edge_count <- network.edgecount(karate.stat)
 ```
 
 ### Exercise: Accessing Attribute Data
