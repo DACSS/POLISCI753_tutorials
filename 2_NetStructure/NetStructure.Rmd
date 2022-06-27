@@ -24,21 +24,21 @@ This tutorial will demonstrate several R commands used to describe aspects of ne
 * Path Length & Geodesic
 * Component Structure and Membership
 
-Datasets used in this tutorial are the abbreviated Game of Thrones Book and Swiss Climate Influence datasets described in the data index for the course.
+Datasets used in this tutorial are the abbreviated Game of Thrones Book *(gotbook)* and Swiss Climate Influence *(climate)* datasets described in the data index for the course.
 
 - *climate.ig* - igraph network object
 - *climate.stat* - statnet network object
 
-The GoT book data were scraped from the 5 published books, and a tie indicates the number of times that two characters are mentioned within close proximity of each other. This abbreviated dataset consists only of characters who appear at least 10 times throughout the 5 books, and all ties between characters who co-occur in the text together fewer than 5 times were removed.
+The *gotbook* network was created from data pulled from the 5 published books, using edges (or ties) between nodes (characters) who are mentioned in the text within close proximity of each other. To retain only ties that are less likely to be incidental, and are likelier to represent a close relationship, ties between characters who appear near each other in the text fewer than 5 times were removed.
 
 - *gotbook.ig* - igraph network object
 - *gotbook.stat* - statnet network object
 
 ## Describe the Network Data
 
-Review of Week 1. Exercise to describe both data sets, using Week 1 NetDescribe tutorial for guidance. 
+First, let's review methods covered in the Week 1 tutorial to describe both datasets.=
 
-1. **List and inspect:** List the objects to make sure the datafiles are working properly:
+1. **List and inspect:** List the objects to make sure the network objects are loaded in memory:
 
 ```{r ls, exercise=TRUE}
 #List the network objects currently available for use
@@ -68,9 +68,15 @@ ecount(gotbook.ig)
 #Find network size (vertex and edge count): statnet
 print(climate.stat)
 print(gotbook.stat)
+# Or:
+network.size(climate.stat)
+network.edgecount(climate.stat)
+network.size(gotbook.ig)
+network.edgecount(gotbook.ig)
+
 ```
 
-3. **Network features**: Are these networks weighted, directed, and Bipartite?
+3. **Network features**: Are these networks weighted, directed, and bipartite?
 
 ```{r features, exercise=TRUE}
 #Find network features (mode, direction, weights)
@@ -89,6 +95,10 @@ is_weighted(gotbook.ig)
 #Alternatively, find network features: statnet
 print(climate.stat)
 print(gotbook.stat)
+# Or:
+is.bipartite(climate.stat)
+is.directed(climate.stat)
+list.edge.attributes(climate.stat)
 ```
 
 4. **Network Attributes**: Now, using commands from either statnet or igraph, list the vertex and edge attributes of the `climate` and `gotbook` network data. Be sure to use the correct network data format (and name) for the command you choose to use.
