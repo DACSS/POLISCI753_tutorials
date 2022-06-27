@@ -126,9 +126,23 @@ As we saw in the last exercise, statnet `print()` command provides a description
 
 * Is this a bipartite or single mode network?
 * Are edges directed or undirected?
+
+This information can also be accessed from the statnet helper functions `is.bipartite()` and `is.directed()`, which return boolean `TRUE` or `FALSE` values:
+
+```{r, echo=TRUE}
+is.bipartite(karate.stat)
+is.directed(karate.stat)
+```
+
 * Are edges weighted or unweighted?
 
-The following igraph commands can be used to answer the same questions.  
+In statnet, a network is weighted if it has any edge attributes **besides** the `na` attribute, which is used to indicate missing edges (as distinct from an edge with a weight of 0, which might have a different meaning depending on context). Weighted networks often simply use the attribute "weight", but there could potentially be more than one weighting attribute with different names. If a network only has an `na` edge attribute, then it is not weighted; if it has any additional edge attributes, it is weighted.
+
+```{r, echo=TRUE}
+list.edge.attributes(karate.stat)
+```
+
+The following igraph commands can be used to answer the same questions. Note the extreme similarity in the function names between igraph and statnet; it is easy to confuse them, and doing so will cause an error. The igraph functions use an underscore ("_") to separate the words in the `is_*` function names, and the statnet functions use a period (".").
 
 ```{r, echo=TRUE}
 # Is this a bipartite or single mode network?
@@ -156,6 +170,10 @@ is_weighted(airport.ig)
 
 # Find network features: statnet
 print(airport.stat)
+# Or:
+is.bipartite(airport.stat)
+is.directed(airport.stat)
+list.edge.attributes(airport.stat)
 ```
 
 ## Vertex and Edge Attributes
