@@ -142,7 +142,7 @@ igraph::dyad.census(gotbook.ig)
 sna::dyad.census(gotbook.stat)
 ```
 
-Note that both igraph and statnet provide functions called `dyad.census`; it is important to understand that this is a coincidence (although an unsurprising one), and that it means that if both libraries are loaded, `dyad.census()` is ambiguous, and will result in whichever library was loaded last in sequence being called. To avoid this, prefix the function name with the specification of the `igraph::` or `sna::` namespace, as appropriate for the object type. (This is a general strategy for any context in R where libraries provide identically-named functions that conflict with each other.)
+Note that both igraph and statnet provide functions called `dyad.census`; it is important to understand that this is a coincidence (although an unsurprising one), and that it means that if both libraries are loaded, `dyad.census()` is ambiguous, and will result in the function from whichever library was loaded last in sequence being called. To avoid this - as in any context in R where libraries provide identically-named functions that conflict with each other -  prefix the function name with the specification of the `igraph::` or `sna::` namespace, as appropriate for the object type.
 
 ### Exercise: Dyad Census
 
@@ -171,18 +171,19 @@ sna::dyad.census(climate.stat)
 
 ## Triad Census
 
-While it is easy to think of social networks as comprised of dyadic interactions, network scholars are more likely to describe the triad as the true building block of network structure. Dyadic interactions are always conducted in the shadow of one or more third parties that can shape the outcome, just like third party observers can influence which chicken wins a dyadic pecking order battle. The triad census provides a fundamental descriptive insight into the types of triads found in a particular dataset - refer to the lecture for more details on interpretation.
+While it is easy to think of social networks as comprised of dyadic interactions, network scholars are more likely to describe the triad as the true building block of network structure. Dyadic interactions are frequently conducted within the context of one or more third parties that can directly or indirectly affect the outcome. The triad census provides a fundamental descriptive insight into the types of triads found in a particular dataset - refer to the lecture for more details on interpretation.
 
 ```{r triad-example, echo=TRUE}
 #Classify all triads in the network: igraph
-igraph::triad_census(gotbook.ig)
+igraph::triad.census(gotbook.ig)
 
 #Classify all triads in the network: statnet
-#note: omit the 'mode' option for a directed network
-sna::triad.census(gotbook.stat, mode="graph")
+sna::triad.census(gotbook.stat)
 ```
 
-The results here are potentially misleading here in two ways . First, the GoT TV network is undirected, which makes igraph spit out an error message and (as expected) only give results for the four basic undirected triads. The statnet command allows us to indicate that the graph is undirected with the option `mode="graph"` and thus returns only the four undirected triads. The two commands provide the same answers, so directed networks are not a concern despite the warning message.
+As with `dyad.census()` in the previous section, each library provides its own `triad.census()` function, and as such need the appropriate namespace specified if both are loaded. statnet's output includes the names of the triads, in addition to the counts.
+
+Note: There are [16 possible classes](https://www.researchgate.net/figure/The-sixteen-isomorphism-classes-of-triad-census-for-directed-networks-D-stands-for_fig2_328894419) of directed triads (see Wasserman and Faust, fig. 6.7), only four of which are possible in undirected graphs. igraph considers this context undefined, and will output a warning message if `triad.census` is called on an undirected graph. Both igraph and statnet will only output the results for these four undirected permutations in undirected graphs, as the others cannot be determined.
 
 Additionally, it appears that while the networks are weighted, the command essentially ignores the weights and provides a triad census that corresponds to one that we might expect if the network were unweighted. To confirm that this is the case, recall that there are $$\binom{n}{k}=\binom{298}{3}=\frac{298\times297\times296}{3\times2\times1}$$
 possible triads in a network. So if the possible combinations of $k=3$ vertices from the $n=298$ total network vertices is the same as the sum of the four triad types in the triad census, then the triad.census routines is working correctly.
