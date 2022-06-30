@@ -29,14 +29,14 @@ Datasets used in this tutorial are the abbreviated Game of Thrones Book *(gotboo
 - *climate.ig* - igraph network object
 - *climate.stat* - statnet network object
 
-The *gotbook* network was created from data pulled from the 5 published books, using edges (or ties) between nodes (characters) who are mentioned in the text within close proximity of each other. To retain only ties that are less likely to be incidental, and are likelier to represent a close relationship, ties between characters who appear near each other in the text fewer than 5 times were removed.
+The *gotbook* network was created from data pulled from the 5 published books, using edges (or ties) between nodes (characters) who are mentioned in the text within close proximity of each other. To retain only ties that are less likely to be incidental, and are likelier to represent a close relationship, ties between characters who appear near each other in the text fewer than 5 times were removed from the network object.
 
 - *gotbook.ig* - igraph network object
 - *gotbook.stat* - statnet network object
 
 ## Describe the Network Data
 
-First, let's review methods covered in the Week 1 tutorial to describe both datasets.=
+First, let's review methods covered in the Week 1 tutorial to describe both datasets.
 
 1. **List and inspect:** List the objects to make sure the network objects are loaded in memory:
 
@@ -50,7 +50,7 @@ First, let's review methods covered in the Week 1 tutorial to describe both data
 ls()
 ```
 
-2. **Network Size:** What is the size of the network? Use the commands from week 1 to inspect the vertices and edges (count) for each of the igraph objects, or print the network size for the statnet objects. Do this for both the `climate` and `gotbook` objects:
+2. **Network Size:** What is the size of the network? Use the commands from week 1 to inspect the count of vertices and edges for each of the igraph objects, or print the network size for the statnet objects. Do this for both the `climate` and `gotbook` objects:
 
 ```{r size, exercise=TRUE}
 #Find network size (vertex and edge count)
@@ -71,8 +71,10 @@ print(gotbook.stat)
 # Or:
 network.size(climate.stat)
 network.edgecount(climate.stat)
-network.size(gotbook.ig)
-network.edgecount(gotbook.ig)
+network.size(gotbook.stat)
+# XXX uh-on. This is returning 0, unless na.omit = F is specified.
+# The na attribute was removed. Why?
+network.edgecount(gotbook.stat)
 
 ```
 
