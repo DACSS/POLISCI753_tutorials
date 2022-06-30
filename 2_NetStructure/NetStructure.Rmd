@@ -351,6 +351,10 @@ average.path.length(gotbook.ig, directed = FALSE)
 
 Compare the results of the two previous commands. What can you learn?
 
+Note: The igraph path-calculation functions have many more advanced options; this is a simple introduction. 
+
+Note also that statnet has no built-in geodesic distance calculations, but the `ergm` and `geodist` packages within statnet contain functions about this topic. See [ergm.geodistn](https://rdrr.io/github/statnet/ergm/man/ergm.geodistdist.html) and [geodist](https://rdrr.io/cran/sna/man/geodist.html) as examples.
+
 ## ADVANCED: Component Structure and Membership
 
 First, let's look at the network component structure. This gives a list with: membership by node, size of each component, and the total number of components.
