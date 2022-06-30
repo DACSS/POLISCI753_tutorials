@@ -342,7 +342,7 @@ The above example shows that there are no intermediary nodes between Bronn and V
 all_shortest_paths(gotbook.ig, "Arys Oakheart", "Robb Stark", weights = NA)$res
 ```
 
-While this command is useful for isolating the distances between specific nodes, it is often more useful to use the concept of shortest path to describe the overall network structure. The following calculates the average path length in the network as a whole. At this point in time, igraph ignores edge weights when calculating average geodesic path length of the network.
+While this command is useful for isolating the distances between specific nodes, it is often more useful to use the concept of shortest path to describe the overall network structure. The following calculates the average path length in the network as a whole. 
 
 ```{r, echo=TRUE}
 #find average shortest path for network
