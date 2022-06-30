@@ -130,7 +130,9 @@ Let's try a full **dyad census**. This gives us the number of dyads where the re
 * Asymmetric (non-mutual), or `asym`, and
 * Absent, or `null`
 
-If using an undirected graph, we will get a warning message using this, because it reports based on directed graphs. In an undirected graph, all edges are mutual and none are asymmetrical - but this distinction exists when ties are directed.
+In an undirected graph, all edges are mutual and none are asymmetrical - but this distinction exists when ties are directed.
+
+(Note: older versions of the igraph library gave warnings for undirected graphs, but [this is no longer the case](https://github.com/igraph/igraph/blob/master/CHANGELOG.md#093---2021-05-05). As of July 2022, the R documentation for `igraph::dyad_census` is out of date on this point.)
 
 ```{r , echo=TRUE}
 #Classify all dyads in the network: igraph
