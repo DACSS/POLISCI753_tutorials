@@ -140,7 +140,7 @@ igraph::dyad.census(gotbook.ig)
 sna::dyad.census(gotbook.stat)
 ```
 
-Note that using the `igraph::` and `sna::` commands tells R to use the version of the `dyad.census()` command found in the igraph and statnet/sna package, respectively. Because some of the commands in the two packages have the same name, you may get an error message if you try to use a statnet command on an igraph object or vice versa. As you can see, the two commands return the same answer, but the statnet format is compact and easier to read and doesn't return a warning.
+Note that both igraph and statnet provide functions called `dyad.census`; it is important to understand that this is a coincidence (although an unsurprising one), and that it means that if both libraries are loaded, `dyad.census()` is ambiguous, and will result in whichever library was loaded last in sequence being called. To avoid this, prefix the function name with the specification of the `igraph::` or `sna::` namespace, as appropriate for the object type. (This is a general strategy for any context in R where libraries provide identically-named functions that conflict with each other.)
 
 ### Exercise: Dyad Census
 
