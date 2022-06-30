@@ -319,28 +319,34 @@ transitivity(climate.ig, type="average")
 
 ## ADVANCED: Path Length and Geodesic
 
-We often are interested in the shortest path, or distance, between two nodes. The `distances` command calculates the distances between two or more nodes. Note that `distances` roughly corresponds to the concept of '6 degrees of separation' when the network ties are binary or unweighted, but the interpretation is quite different when edges are weighted. *Note that we must manually tell igraph to ignore edge weights.*
+We often are interested in the shortest path, or distance, between two nodes. The igraph `distances` command calculates the distances between two or more nodes. Note that `distances` roughly corresponds to the concept of '6 degrees of separation' when the network ties are binary or unweighted, but the interpretation is quite different when edges are weighted. *Note that we must explicitly tell igraph to ignore edge weights* when calculating simple distances in weighted networks.
 
 ```{r, echo=TRUE}
 #Calculate distances between two nodes
-distances(gotbook.ig,"Petyr Baelish","Robb Stark")
+distances(gotbook.ig, "Petyr Baelish", "Robb Stark")
 
 #Calculate distance using unweighted edges
-distances(gotbook.ig,"Petyr Baelish","Robb Stark", weights=NA)
+distances(gotbook.ig, "Petyr Baelish", "Robb Stark", weights = NA)
 ```
 
-We can also find all of the shortest paths between two characters in this network. These list the starting node (Bronn) and the ending node (Varys) with all nodes inbetween for each path. *The option `weights=NA` means that any available edge weights are ignored.*
+We can also find all of the shortest paths between two characters in this network. These list the starting node (Bronn) and the ending node (Varys) with all nodes in between for each path. *The option `weights=NA` means that any available edge weights are ignored.*
 
 ```{r, echo=TRUE}
 # list shortest paths between 2 nodes
-all_shortest_paths(gotbook.ig,"Bronn","Varys", weights=NA)$res
+all_shortest_paths(gotbook.ig, "Bronn", "Varys", weights = NA)$res
+```
+
+The above example shows that there are no intermediary nodes between Bronn and Varys. The following example shows three identical-length paths, each with one intermediary node, between Arys Oakheart and Robb Stark:
+
+```{r, echo=TRUE}
+all_shortest_paths(gotbook.ig, "Arys Oakheart", "Robb Stark", weights = NA)$res
 ```
 
 While this command is useful for isolating the distances between specific nodes, it is often more useful to use the concept of shortest path to describe the overall network structure. The following calculates the average path length in the network as a whole. At this point in time, igraph ignores edge weights when calculating average geodesic path length of the network.
 
 ```{r, echo=TRUE}
 #find average shortest path for network
-average.path.length(gotbook.ig,directed=F)
+average.path.length(gotbook.ig, directed = FALSE)
 ```
 
 Compare the results of the two previous commands. What can you learn?
