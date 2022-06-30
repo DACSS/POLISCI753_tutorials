@@ -226,7 +226,7 @@ sna::triad.census(climate.stat)
 
 ## Transitivity or Global Clustering
 
-While a triad census is interesting, it is highly descriptive and we may want a shorter reference point to understand the level of transitivity in the network. **Transitivity** is a network-level statistic that captures the proption of connected triads in the network that are complete (all three possible links present), and varies between 0 and 1, with 0 meaning none of the connected triads are transitive and 1 meaning all connected triads are transitive. Note that there is a weighted network method (barret) available in `igraph::transivity()`, but not explored here. The Barret reference is provided, and see here for a discussion of [specialized routines for weighted networks.](https://toreopsahl.com/tnet/weighted-networks/clustering/)
+While a triad census is interesting, it is highly descriptive and we may want a shorter reference point to understand the level of transitivity in the network. **Transitivity** is a network-level statistic that captures the proportion of connected triads in the network that are complete (all three possible links present), ranging from 0 (meaning none of the connected triads are transitive) to 1 (all connected triads are transitive). Note that there is a [weighted network method (Barrat)](https://toreopsahl.com/tnet/weighted-networks/clustering/) available in `igraph::transivity()`, but not explored here. 
 
 ```{r, echo=TRUE}
 #get network transitivity: igraph
@@ -235,7 +235,7 @@ transitivity(gotbook.ig)
 
 ### Exercise: Transitivity
 
-Now, compute the **global** transitivity of the climate network. Comparing results from the triad census to the overall transtivity measure, what have we learned about the network structure?
+Now, compute the **global** transitivity of the climate network. Comparing results from the triad census to the overall transitivity measure, what have we learned about the network structure?
 
 ```{r trans, exercise=TRUE}
 #get network transitivity
@@ -256,37 +256,38 @@ Note that there is a also a command for transitivity in statnet/sna, `gtrans()` 
 
 ```{r gtrans-solution}
 #get hierarchical network transitivity: statnet
-gtrans(climate.stat)
+gtrans(climate.stat, diag = T)
 ```
 
 Note, there are also methods for weighted networks available in `sna::gtrans()`, rank and correlation, along with the relevant references.
 
 ## Local Transivity or Clustering
 
-As we will explore more in future weeks, actors may be affected by the level of transitivity within their local ego networks. **Local transitivity**, more commonly known as the **local clustering coefficient**, is a technical description of how many of your friends are also friends with each other - it is just the density of an ego network. Lets compare the transitivity of the local ego networks of Petyr Baelish, Jon Snow, and Daenerys Targaryen. Reminder: an inroduction to the R commands `[]` and `c()` is available in the RBasics tutorial (NOT YET AVAILABLE). 
+As we will explore more in future weeks, actors may be affected by the level of transitivity within their local ego networks. **Local transitivity**, more commonly known as the **local clustering coefficient**, is a technical description of how many of your friends are also friends with each other - it is just the density of an ego network. Let's compare the transitivity of the local ego networks of Petyr Baelish, Jon Snow, and Daenerys Targaryen in the Game of Thrones book network.
 
 ```{r, echo=TRUE}
 #Retrive a list of the three vertices we are interested in
-V(gotbook.ig)[c("Petyr Baelish","Jon Snow", "Daenerys Targaryen")]
+V(gotbook.ig)[c("Petyr Baelish", "Jon Snow", "Daenerys Targaryen")]
 
 #check ego network transitivity: igraph
-transitivity(gotbook.ig, type="local", vids=V(gotbook.ig)[c("Petyr Baelish","Jon Snow", "Daenerys Targaryen")]) 
+transitivity(gotbook.ig, type = "local", 
+             vids = V(gotbook.ig)[c("Petyr Baelish", "Jon Snow", "Daenerys Targaryen")]) 
 
 ```
 
-Note that the average of local transivity for all vertices in a graph is often described as the **average clustering coefficient**, while the global clustering coefficient is equivalent to the transitivity of the network. The transivity ratio places more emphasis on high degree nodes, while the average clustering coefficient of a network places more emphasis on low degree nodes. Compare the average clustering cofficient of the gotbook data to the transitivity ratio or global clustering coefficient.
+Note that the average of local transitivity for all vertices in a graph is often described as the **average clustering coefficient**, while the **global clustering coefficient** is equivalent to the transitivity of the entire network. The transitivity ratio places more emphasis on high-degree nodes, while the average clustering coefficient of a network places more emphasis on low-degree nodes. Compare the average clustering coefficient of the gotbook data to the transitivity ratio or global clustering coefficient.
 
 ```{r, echo=TRUE}
 #get global clustering cofficient: igraph
-transitivity(gotbook.ig, type="global")
+transitivity(gotbook.ig, type = "global")
 ##get average local clustering coefficient: igraph
-transitivity(gotbook.ig, type="average")
+transitivity(gotbook.ig, type = "average")
 
 ```
 
 ### Exercise: Local Clustering
 
-Compute the **local** clustering coefficient of three other vertices in the game of thrones network: Tyrion Lannister, Cersei Lannister and Arya Stark. What do the differences in values between these two vertices, and the example vertices say about these members of the network?
+Compute the **local** clustering coefficient of three other vertices in the Game of Thrones book network: Tyrion Lannister, Cersei Lannister and Arya Stark. What do the differences in values between these two vertices, and the example vertices, say about these members of the network?
 
 ```{r localtrans, exercise=TRUE}
 #check ego network transitivity: igraph
@@ -295,7 +296,8 @@ Compute the **local** clustering coefficient of three other vertices in the game
 
 ```{r localtrans-solution}
 #check ego network transitivity: igraph
-transitivity(gotbook.ig, type="local", vids=V(gotbook.ig)[c("Tyrion Lannister","Cersei Lannister", "Arya Stark")]) 
+transitivity(gotbook.ig, type = "local", 
+             vids = V(gotbook.ig)[c("Tyrion Lannister", "Cersei Lannister", "Arya Stark")]) 
 ```
 
 Now, try comparing the global clustering coefficient to the average local clustering coefficient for the climate network.
