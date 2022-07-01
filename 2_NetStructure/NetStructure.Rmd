@@ -357,7 +357,7 @@ Note also that statnet has no built-in geodesic distance calculations, but the `
 
 ## ADVANCED: Component Structure and Membership
 
-First, let's look at the network component structure. This gives a list with: membership by node, size of each component, and the total number of components.
+Finally, let's look at the network component structure. The `igraph::components()` function gives a list with membership by node, size of each component, and the total number of components.
 
 ```{r, echo=TRUE}
 #What element are returned by components
@@ -366,14 +366,18 @@ igraph::components(gotbook.ig)$no #Number of components
 igraph::components(gotbook.ig)$csize #Size of each component
 ```
 
-We can see from this that there is one large component with 195 members, and 103 components with only one member. We can easily find out the names of all the isolates in this component structure. Based on the boundaries put on nodes and ties in this dataset, what sense can we make of isolates in this dataset?
+We can see from this that there is one large component with 195 members (or nodes/vertices), and 103 components with only one member each, or *isolates*. (This means that the network is *disconnected*, which can be verified with `igraph::is_connected()` or `sna::is.connected()`.) The `sna::isolates()` function returns the indices of these isolates in the statnet network, which we can use to list the names of all the isolates in this component structure.  
 
 ```{r, echo=TRUE}
 #retrieve the index of isolate nodes
 isolates(gotbook.stat)
 #subset vertex.names attribute to get names of isolates
-as.vector(gotbook.stat%v%'vertex.names')[c(isolates(gotbook.stat))]
+as.vector(gotbook.stat %v% "vertex.names")[isolates(gotbook.stat)]
 ```
+
+Based on the boundaries put on nodes and ties in this dataset, what sense can we make of isolates in this dataset?
+
+Note: As we are seeing more and more, although there is a lot of functional overlap between igraph and statnet, there are frequently cases where one library handles a particular situation better than the other, and so it is often useful to have both libraries available, and both igraph and statnet versions of the network loaded. igraph, for instance, does not have an `isolates()` function that returns the indices of isolate nodes, and although it could be coded around (with some effort), it's much easier to just use the statnet function.
 
 ### Exercise: Component Structure and Membership
 
