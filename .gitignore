@@ -6,5 +6,6 @@
 rsconnect/
 # ignore .html output files
 *.html
-
+# ignore generated images
+NetDegree_files/
 .DS_Store
