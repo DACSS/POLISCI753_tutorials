@@ -43,6 +43,18 @@ Inspect the basic network descriptors for the `trade2007` network. For this exer
 #Find network size and type
 ```
 
+```{r describe-solution}
+#Find network size (vertex and edge count): igraph
+vcount(trade2007.ig)
+ecount(trade2007.ig)
+
+#Find network size (vertex and edge count): statnet
+print(trade2007.stat)
+# Or:
+network.size(trade2007.stat)
+network.edgecount(trade2007.stat)
+```
+
 2. **Dyad Census:** Now, use the tutorial from Week 2 to inspect the dyads in the network. 
 
 ```{r dyad, exercise=TRUE}
