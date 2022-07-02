@@ -122,29 +122,41 @@ igraph::components(trade2007.ig)$csize #Size of each component
 
 ## Density
 
-The *density* of a network is defined as the proportion of ties present out of all possible ties in a network. Note that the network density command ignores edge values at present. If loops are present or there are multiple edges between two nodes, then the results may not make sense.
+The *density* of a network is defined as the ratio of the number of edges it has, to the maximum number it *could* have if all nodes were connected. The question of whether loops, or self-connected nodes, should be considered in density calculations is an academic one without a clear general answer; as a default, it is probably best not to consider loops in density calculations unless it makes sense in your application. Since every node could potentially connect to itself as well as the other nodes in the network, factoring this possibility in will affect the output.
+
+(32 of 34 actors in the climate network do connect to themselves, so we will have to contend with their presence in our calculations in this example.)
+
+Note: edge *weights* are not part of the calculation, and are not considered in either igraph or statnet. 
+igraph provides the `graph.density()` function, a wrapper around (and synonym for) `edge_density`. Its optional argument `loops`, which defaults to `FALSE`, tells it whether or not to make the calculation considering loops. Note that it does *not* cause existing loops not to be counted; it presumes that you know whether there are loops in the network or not. If you do not want to include loops in the calculation, it is best to first remove them via igraph's `simplify()` function, which also removes multiple edges.
 
 ```{r, echo=TRUE}
 #get network density: igraph
 graph.density(climate.ig)
 
-#get network density: statnet
-network.density(climate.stat)
+# Get network density with igraph, omitting loops
+# (Be sure to use the igraph:: namespace with simplify if also using 
+# purrr/tidyverse, to avoid collisions with purrr::simplify)
+graph.density(igraph::simplify(climate.ig))
 ```
 
-The output for the two packages is different. A closer look at the data suggests that a major different between them is how the two density calculations deal with "loops" - or ties from an actor to themselves. Some - but not all - actors in the climate network nominate themselves. (32 of 34 actors) It appears that `network.density` recognizes that loops are possible, while Igraph provides an incorrect density calculation as the default assumes that loops are not included but does not remove them. Therefore, the default calculation includes the loops in the numerator but not the denominator of the density calculation. After including the option `loops=TRUE`, Igraph provides an updated answer that accounts for loops in both numerator and denominator, same as the answer given by `network.density`.
+Statnet provides two different functions: `network.density()` and `gden()`. `gden()` has an optional `diag` argument, defaulting to `FALSE` as with igraph's `loops` argument in `graph.density()` above, which describes whether to count loops (the diagonal of a network matrix is where loops are found, nodes that connect to themselves). Note that unlike igraph's `graph.density()`, it does not require loops to be removed from the network prior to the calculation. (It also has a `mode()` argument that defaults to `digraph`, for directed network; set it to `graph` if the network is undirected.)
 
-```{r, echo=TRUE}
-#get network density without loops: igraph
-graph.density(climate.ig, loops = TRUE)
+```{r echo=TRUE}
+# get network density: statnet
+# the default in gden() is to omit loops
+gden(climate.stat, diag = FALSE, mode = "digraph")
 ```
 
-There are often good reasons to ignore self-nominations even when they are present, however. The `gden` command includes loops but has an option to ignore the diagonal. Then it calculates density as all ties between actors $i$ and $j$ - so not including self-nominations. *Note: `gden()` and `network.density()` deal with missing edges differently. The former omits missing edges from numerator but not denominator, the latter omits from both.*
+`network.density()` assumes and counts loops in the network, and is the equivalent of igraph's `graph.density()` with `loops = TRUE` for networks with loops.
 
-```{r, echo=TRUE}
-#get network density without loops: statnet
-gden(climate.stat, diag = FALSE)
+```{r echo=TRUE}
+# compare igraph's graph.density(x, loops = TRUE) with statnet's 
+# network.density with default settings
+igraph::graph.density(climate.ig, loops = TRUE)
+network::network.density(climate.stat)
 ```
+
+*Note: `gden()` and `network.density()` deal with missing edges differently. The former omits missing edges from numerator but not denominator, the latter omits from both.*
 
 ### Exercise: Network Density
 
