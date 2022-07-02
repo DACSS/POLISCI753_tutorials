@@ -180,7 +180,7 @@ network.density(trade100.stat)
 
 ## Vertex Degree
 
-One measure of node centrality or popularity is node degree: a count of the relationships that a node is involved in or the count of the edges that are incident to a vertex. Vertex degree is a description of an individual node; each vertex in a network may have a different node degree.
+Perhaps the simplest measure of node centrality or popularity is degree: a count of the relationships that a node is involved in, or the count of the edges that are incident to a vertex. This is similar to counting how many other nodes a single node is connecting to, although there is the possibility of self-connection (loops, as previously discussed), and multiple connections to specific single nodes, that can complicate the picture somewhat. It is more properly described as the number of edges a node connects to, whether those edges are to other nodes, or to themselves.
 
 ```{r, echo=TRUE}
 #Calculate average network degree: igraph
@@ -190,31 +190,31 @@ igraph::degree(climate.ig)
 sna::degree(climate.stat)
 ```
 
-Two differences between the two commands are clearly visible. First, `sna::degree` ignores loops or self-nominations, while `igraph::degree` includes loops. Including the option `loops=FALSE` in the `igraph::degree` command will make the two commands equivalent for this data set. Note that setting `diag=TRUE` in `sna::degree` does not guarantee equivalence as statnet only single counts the loops in a directed network, while igraph double-counts the loops.
+Two differences between the two commands are clearly visible. First, `sna::degree` ignores loops or self-nominations, while `igraph::degree` includes loops. Including the option `loops = FALSE` in the `igraph::degree` command will make the two commands equivalent for this data set. Note that setting `diag = TRUE` in `sna::degree` does not guarantee equivalence, as statnet only single counts the loops in a directed network, while igraph double-counts the loops.
 
-Second, the Igraph command also provides node name along with node degree, which can be helpful if you would like to know the degree of a particular node. As you can imagine, however, this list can be quite difficult to interpret in datasets with 100s or 1000s of nodes or when nodes have long names. Therefore, we rarely use the degree command to list the degree of all nodes, but instead use the network degree command to:
+Second, the igraph command also provides node name along with node degree, which can be helpful if you would like to know the degree of a particular node. As you can imagine, however, this list can be quite difficult to interpret in datasets with many nodes, or when nodes have long names. Therefore, we rarely use the degree command to list the degree of all nodes, but instead use it to:
 
 * compute network summary statistics, such as average network degree
 * graph the network degree distribution, or
-* identify particular nodes, such as the five nodes with the most contacts.
+* identify particular nodes, such as the *n* nodes with the most contacts.
 
-## Review: Create a DataFrame
+## Review: Create a Dataframe
 
-Regardless of the way(s) in which we plan to use network degree measures, it will be useful to store vertex attributes such as degree in a table of node attributes. This table, or data frame,  of node measures can even be used in traditional econometric models that include network structure variables. Here is an example of the basic R command to create a dataframe with named variables `names` and `degree`, and row names set as the entries in the `names` variable. For more details, see the tutorial *Basic.Dataframe*.
+Regardless of the way(s) in which we plan to use network degree measures, it will be useful to store vertex attributes such as degree in a table of node attributes. This table, or dataframe, of node measures can even be used in traditional econometric models that include network structure variables. Here is an example of the basic R command to create a dataframe with named variables `names` and `degree`, and row names set as the entries in the `names` variable. 
 
-```{r, echo=TRUE, eval=FALSE}
+```{r, echo=TRUE}
 # create a dataset of vertex names and degree: igraph
 climate.nodes <- data.frame(name = V(climate.ig)$name, 
                             degree = igraph::degree(climate.ig))
+climate.nodes
 ```
 
 Here are the same commands in igraph, but not evaluated to avoid repetition.
-```{r, echo=TRUE}
+
+```{r, echo=TRUE, eval=FALSE}
 # create a dataset of vertex names and degree: statnet
 climate.nodes <- data.frame(name = climate.stat %v% "vertex.names", 
                             degree = sna::degree(climate.stat))
-
-climate.nodes
 ```
 
 For those who need a quick breakdown of what these commands do:
@@ -226,7 +226,7 @@ For those who need a quick breakdown of what these commands do:
 
 ### Exercise: Create a dataframe
 
-You can do the same thing with the `trade2007` dataset. The goal is to create a dataframe of names and degrees, so using the code above, simply replace the climate elements with trade2007
+You can do the same thing with the `trade2007` dataset. The goal is to create a dataframe of names and degrees, so using the code above, simply replace the climate elements with `trade2007`.
 
 ```{r df, exercise=TRUE}
 # create a dataset of vertex names and degree: igraph or statnet
