@@ -251,7 +251,7 @@ trade2007.nodes # output the dataframe
 
 ## Degree in Directed Networks
 
-In a directed network, it is possible to calculate both *indegree* or the total number of nodes that send a tie to the focal node, and *outdegree*, or the total number of nodes to which the focal node sends a tie. R allows you to specify whether you want to calculate in-degree, out-degree or total degree when working with a directed network. By default, the function `degree` produces a count of total degree.
+In a directed network, it is possible to calculate both *indegree*, or the total number of nodes that send a tie to the focal node, and *outdegree*, or the total number of nodes to which the focal node sends a tie. R allows you to specify whether you want to calculate in-degree, out-degree, or total degree when working with a directed network. By default, the function `degree` produces a count of total degree.
 
 ```{r, echo=TRUE}
 #calculate in-degree: statnet
@@ -260,35 +260,39 @@ sna::degree(climate.stat, cmode = "indegree")
 sna::degree(climate.stat, cmode = "outdegree")
 ```
 
-Here are the same commands in igraph, but not evaluated to avoid repetition.
+Here are the same commands in igraph.
 
-```{r, echo=TRUE, eval=FALSE}
+```{r, echo=TRUE}
 #calculate in-degree: igraph
 igraph::degree(climate.ig, mode = "in", loops = FALSE)
 #calculate out-degree: igraph
 igraph::degree(climate.ig, mode = "out", loops = FALSE)
 ```
 
-To make use of these calculations, you'll want to attach them to the dataframe you created in the last exercise. To do this, we can use the mutate command to add columns onto the `climate.nodes` object created before. See **Basic.Dataframe** tutorial for an introduction. Note that we can separate multiple variable create commands within `mutate` with a comma.
+To make use of these calculations, you'll want to attach them to the dataframe you created in the last exercise. To do this, we can use the `dplyr::mutate()` function to add columns onto the `climate.nodes` object created before. 
 
 ```{r, echo=TRUE}
 #statnet version:
-climate.nodes<-climate.nodes %>%
+climate.nodes <- climate.nodes %>%
     mutate(indegree = sna::degree(climate.stat, cmode = "indegree"),
-          outdegree = sna::degree(climate.stat, cmode = "outdegree"))
+           outdegree = sna::degree(climate.stat, cmode = "outdegree")
+           )
 
 climate.nodes
 ```
+
 Here are the same commands in igraph, but not evaluated to avoid repetition.
+
 ```{r, echo=TRUE, eval=FALSE}
 #igraph version:
-climate.nodes<-climate.nodes %>%
+climate.nodes <- climate.nodes %>%
     mutate(indegree = igraph::degree(climate.ig, mode = "in", loops = FALSE),
            outdegree = igraph::degree(climate.ig, mode = "out", loops = FALSE))
 ```
 
 ### Exercise
-Now, do the same for the trade2007 network. create a dataframe that includes all three measures of degree: total degree, indegree, and outdegree. To do this, you'll simply need to add the codes of `totdegree`, `indegree` and `outdegree` to replace the initial `degree` column. You don't need to evaluate the degrees before attaching them to the dataframe. 
+
+Now, do the same for the trade2007 network. Create a dataframe that includes all three measures of degree: total degree, indegree, and outdegree. To do this, you'll simply need to add the codes of `totdegree`, `indegree` and `outdegree` to replace the initial `degree` column. You don't need to evaluate the degrees before attaching them to the dataframe. 
 
 ```{r degree2, exercise=TRUE}
 #attach the in, out, and total degree values to the dataframe
@@ -316,7 +320,7 @@ trade2007.nodes
 
 ## Network Degree Summary Statistics
 
-What does the distribution of these scores look like? We can use the basic `summary` command to find the range, mean, median and standard deviation of a vector.
+What does the distribution of these scores look like? We can use the basic `summary()` function to find the range, mean, median and standard deviation of a vector.
 
 ```{r, echo=TRUE}
 #create a vector with the numbers 1 to 10
@@ -325,7 +329,7 @@ v <- 1:10
 summary(v)
 ```
 
-Now, we can use the same command to get basic summaries for all the columns in a dataframe. In this case, we will get summary statistics for the climate network node attributes.
+Now, we can use the same function to get basic summaries for all the columns in a dataframe. In this case, we will get summary statistics for the climate network node attributes.
 
 ```{r, echo=TRUE}
 #get summary statistics for node attributes
@@ -347,6 +351,7 @@ summary(trade2007.nodes)
 ```
 
 ### ADVANCED Exercise
+
 Try getting summary statistics for node degree for the binary network degree, creating the appropriate dataframe in this exercise and getting the summary. Unlike other exercises, we do not provide the correct dataframe for you to access!
 
 ```{r summadv, exercise=TRUE}
@@ -364,7 +369,7 @@ summary(data.frame(name = trade100.stat %v% "vertex.names",
 
 ## ADVANCED: Summarise by Group
 
-There are often times when we may want to know about groups of nodes, not everyone in the network. For example, maybe we care about average network characteristics of characters in the game of thrones grouped by family or age.  Here is a basic example of creating summary statistics for groups, see **Basic.Dataframe** or https://dplyr.tidyverse.org/ for further details.
+There are times when we may want to know about sub-groups of nodes, not the entire network. For example, maybe we are interested in average network characteristics of characters in the game of thrones grouped by family or age.  Here is a basic example of creating summary statistics for groups.
 
 ```{r, echo=TRUE}
 #ADVANCED: summarize by type
@@ -378,7 +383,7 @@ df %>%
 
 ### Exercise
 
-Try attaching the "type5" attribute to the climate node dataframe. Can you `summarise` the data after grouping by organization `type`?
+Try attaching the `type5` vertex attribute to the climate node dataframe. Can you `summarise` the data after grouping by organization `type`?
 
 ```{r advanced, exercise=TRUE}
 ```
@@ -390,13 +395,14 @@ climate.nodes$type5 <- V(climate.ig)$type5
 climate.nodes %>%
   group_by(type5) %>%
   select(indegree, outdegree) %>%
-   summarise_all(., funs(mean,n()))
+  summarise_all(., funs(mean, n()))
 ```
 
 ## Network Degree Distribution
-The command `hist` is a basic R command that draws a histogram of vector of data. We can set options such as `main` for the main title of the histogram and `xlab` for the label of the x-axis. Here is a toy example.
 
-Let's check out the histogram for the distribution of node degree for the climate network. What do you make of the differences in the two histograms?
+The command `hist` is a basic R command that draws a histogram of vector of data. We can set options such as `main` for the main title of the histogram and `xlab` for the label of the x-axis. Here is a simple example.
+
+Let's examine the histograms for the distributions of node in- and out-degrees for the climate network. What do you make of the differences in the two histograms?
 
 ```{r, echo=TRUE}
 #create a histogram of Climate Influence Indegree
@@ -406,10 +412,11 @@ hist(climate.nodes$indegree,
 
 hist(climate.nodes$outdegree, 
      main = "Climate Influence: Out-degree Distribution ", 
-     xlab = "Nominations made")
+     xlab = "Nominations Made")
 ```
 
 ### Exercise
+
 Now, try creating histograms of in and out degree for the 2007 trade network.
 
 ```{r hist, exercise=TRUE}
@@ -419,25 +426,30 @@ Now, try creating histograms of in and out degree for the 2007 trade network.
 ```{r hist-solution}
 hist(trade2007.nodes$indegree, 
      main = "2007 Trade Flows: In-degree Distribution", 
-     xlab = "Import Connection")
+     xlab = "Import Connections")
 
 hist(trade2007.nodes$outdegree, 
-     main = "2007 Trade Flows: Out-degree Distribution ", 
-     xlab = "Export Connection")
+     main = "2007 Trade Flows: Out-degree Distribution", 
+     xlab = "Export Connections")
 ```
 
-## Network degree centralization
-We can also calculate a network-level centralization score based on actor degree scores. The statnet command is a little more straightforward, as the same `centralization` command is used to find network centralization regardless of which measure you of centralization you are interested in (e.g., degree, betweenness, closeness, eigenvalue, etc). All you need to do is specify the `degree` option to calculate degree centralization, and use the same options as used in the `degree` command. What might be the interpretation of different centralization scores for in-degree and out-degree in the climate network?
+## Network Degree Centralization
+
+We can also calculate a network-level *centralization* score based on actor degree scores. (igraph and statnet both provide a `centralization()` function, so it is recommended to prefix the function name with the appropriate library to avoid conflicts.) 
+
+The statnet function takes the argument `degree` (without quotes, a reserved word), to describe the function to use for the node scores; the `cmode` argument is passed to this `degree` function. Its valid values in this context are "indegree", "outdegree", and "freeman", which is the combined total of indegree and outdegree. It also has a `diag` argument, defaulting to `FALSE`, which describes whether the diagonal (or loops) should be counted in the calculation.
+
+What might be the interpretation of different centralization scores for in-degree and out-degree in the climate network?
 
 ```{r, echo=TRUE}
 #get network centralization score: statnet
-centralization(climate.stat, degree, cmode = "indegree")
-centralization(climate.stat, degree, cmode = "outdegree")
+sna::centralization(climate.stat, degree, cmode = "indegree")
+sna::centralization(climate.stat, degree, cmode = "outdegree")
 ```
 
-The `centr_degree` function returns an object with several components, we are interested in the `centralization` component. It requires specification of options as in the `igraph::degree` command used above. This code is not evaluated to avoid repetition.
+The igraph `centr_degree()` function returns an object with several components; we are interested in the `centralization` component. The valid `mode` argument options are "in", "out", or "total". Note that the `loops` argument defaults to `TRUE`, and should be set to `FALSE` if it is not desired to include loops in the calculation, to match statnet's default above.
 
-```{r, echo=TRUE, eval=FALSE}
+```{r, echo=TRUE}
 #get network centralization score: igraph
 centr_degree(climate.ig, loops = FALSE, mode = "in")$centralization
 centr_degree(climate.ig, loops = FALSE, mode = "out")$centralization
@@ -460,61 +472,70 @@ centralization(trade100.stat, degree, cmode = "outdegree")
 ```
 
 ## Identifying Specific Nodes
+
 There may be times when we are interested in identifying and describing nodes with specific values, such as the nodes with the most or the fewest number of network ties. In order to identify these nodes, we will need to sort vectors and print out a subset of the possible nodes.
 
-## Basic commands: sorting
+### Basic commands: sorting
 
-As a reminder, we use the `arrange` command to sort data objects in R. See the tutorial **Basics.Dataframe** for more details.
+As a reminder, we can use the `arrange()` function to sort data objects in R. (Note that many packages provide implementations of `arrange()` appropriate to their data types; the one shown here is from `dplyr`, part of the tidyverse.)
 
 ```{r, echo=TRUE}
 #sort a vector
-df <- data.frame(scores = c(55, 23, 48, 3, 112, 14, 25), 
-                 type = c("A", "B", "A", "B", "B", "A", "B"))
+df <- data.frame(scores = c(55, 23, 48, 3, 112, 14, 25, 48), 
+                 type = c("A", "B", "A", "B", "B", "A", "B", "B"))
 arrange(df, scores)
 ```
 
 Using the `desc()` option in `arrange` puts the largest values at the top of the list rather than the bottom.
-```{r}
+
+```{r, echo=TRUE}
 #sort largest numbers first
 arrange(df, desc(scores))
 ```
 
-Using the `slice(t)` command tells R to return only the `t`th row of the data object. In this case, we tell R to return rows 1, 2 and 3 (1:3) of the data object arranging in descending order by scores - or the top three scores.
+The `slice` family of functions offer many ways to arrange and subset data. For example, the functions `slice_min()` and `slice_max()` can be used to sort a dataframe by a specific field and return a subset. The example below returns the rows with the 3 highest scores:
 
-```{r}
+```{r, echo=TRUE}
 #only return 3 largest values
-arrange(df, desc(scores)) %>%
-  slice(1:3)
+df %>% slice_max(scores, n = 3)
 ```
+
+Note that the output above listed 4 results, even though we specified `n = 3` in the `slice_max()` function. Why? Because the lowest value of the top 3, 48, was shared by 2 nodes, so they were both listed. This means that these functions can return more rows that are requested, as you will see in the final exercise. To suppress this, add `with_ties = FALSE` to the command, but be aware that it is undefined which of the tied answers will be omitted:
+
+```{r, echo=TRUE}
+#only return 3 largest values, suppress ties
+df %>% slice_max(scores, n = 3, with_ties = FALSE)
+```
+
 
 ### Exercise: sorting
 Try sorting a vector of vertex degree for the climate data, and list the 5 nodes with the highest indegree. Can you also list the five nodes with the lowest indegree? How about the highest outdegree?
 
 ```{r degree1, exercise=TRUE}
-#sort the indegree vector of nodes in the climate network
+#sort nodes in the climate network
 
 ```
 
 ```{r degree1-solution, eval=FALSE}
-#sort the indegree vector of nodes in the climate network
-arrange(climate.nodes, desc(indegree)) %> %slice(1:5)
-arrange(climate.nodes, desc(outdegree)) %>% slice(1:5)
-arrange(climate.nodes, indegree) %>% slice(1:5)
+#sort nodes in the climate network
+climate.nodes %>% slice_max(indegree, n = 5)
+climate.nodes %>% slice_min(indegree, n = 5)
+climate.nodes %>% slice_max(outdegree, n = 5)
 ```
 
 ### Exercise 2
 Do the same thing for the `trade2007` dataset. For this, simply replace the dataframe name from the previous exercise:
 
 ```{r degree3, exercise=TRUE}
-#sort the indegree vector of nodes in the trade2007 network
+#sort nodes in the trade2007 network
 
 ```
 
 ```{r degree3-solution}
-#sort the indegree vector of nodes in the climate network
-arrange(trade2007.nodes, desc(indegree)) %>% slice(1:5)
-arrange(trade2007.nodes, desc(outdegree)) %>% slice(1:5)
-arrange(trade2007.nodes, indegree) %>% slice(1:5)
+#sort nodes in the trade2007 network
+trade2007.nodes %>% slice_max(indegree, n = 5)
+trade2007.nodes %>% slice_min(indegree, n = 5)
+trade2007.nodes %>% slice_max(outdegree, n = 5)
 ```
 
 ### ADVANCED Exercise
@@ -530,17 +551,10 @@ Can you find the low and high degree nodes for the binary trade network? You wil
 temp <- data.frame(name = trade100.stat %v% "vertex.names",
     indegree = sna::degree(trade100.stat, cmode = "indegree"),
     outdegree = sna::degree(trade100.stat, cmode = "outdegree"))
-temp %>%
-  arrange(desc(indegree)) %>%
-  slice(1:5)
-temp %>%
-  arrange(indegree) %>%
-  slice(1:5)
-temp %>%
-  arrange(desc(outdegree)) %>%
-  slice(1:5)
-temp %>%
-  arrange(outdegree) %>%
-  slice(1:5)
+
+temp %>% slice_max(indegree, n = 5, with_ties = FALSE)
+temp %>% slice_min(indegree, n = 5, with_ties = FALSE)
+temp %>% slice_max(outdegree, n = 5, with_ties = FALSE)
+temp %>% slice_min(outdegree, n = 5, with_ties = FALSE)
 ```
 
