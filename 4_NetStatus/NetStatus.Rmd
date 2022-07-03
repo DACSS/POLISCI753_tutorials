@@ -26,7 +26,7 @@ This tutorial will demonstrate use of the R commands used to measure aspects of 
 * Eigenvector Centrality & Centralization 
 * Derived and Reflected Centrality & Centralization
 
-We will be using several datasets for this exercise. The first is the Game of Thrones Like-Dislike network. It is a small, weighted, directed network showing characters affinity for one another. The degree to which a character likes another is held by the "weight" attribute and ranges between -5 and 5.
+We will be using several datasets for this exercise. The first is the Game of Thrones Like-Dislike network. It is a small, weighted, directed network showing characters' affinity for one another. The degree to which a character likes another is held by the "weight" edge attribute, and ranges from -5 (dislike) to 5 (like).
 
 - *gotlike.ig* - igraph network object
 - *gotlike.stat* - statnet network object
@@ -36,11 +36,11 @@ The GoT book data were scraped from the 5 published books, and a tie indicates t
 - *gotbook.ig* - igraph network object
 - *gotbook.stat* - statnet network object
 
-The third dataset is from the IMF, and a tie represents the value of a country's securities held by another country in 2014. The fourth network is created similarly to trade100 last week, and is a 0/1 tie indicating that country I holds at least 100 million in securities of country J.
+The third dataset (imf2014) is from the International Monetary Fund, where a tie represents the value of a country's securities held by another country in 2014. The fourth network (imf100) is similar to the trade100 network from last week, and is a Boolean tie indicating whether country A holds at least 100 million in securities from country B.
 
 - *imf2014.ig* - igraph network object
 - *imf2014.stat* - statnet network object
-- *imf100.stat* - (0/1) tie when nation holds >100million in securities
+- *imf100.stat* - statnet network object
 
 ## Basic Network Description
 
@@ -94,7 +94,7 @@ And do the same for the Game of Thrones data:
 
 ```
 
-View the top 5 values of your new dataframe:
+View the first 6 rows of your new dataframe:
 
 ```{r degrees, exercise=TRUE}
 
@@ -108,19 +108,20 @@ head(gotlike.nodes)
 
 ## Eigenvector Centrality
 
-We use `evcent` to calculate node level eigenvector centrality scores in statnet, and the familiar `centralization` score with the correct option to calculate network centralization. We are using the `head` command to just view the first few scores.
+We use `evcent` to calculate node level eigenvector centrality scores in statnet, and the familiar `centralization` score with the correct option to calculate network centralization. We are using the `head` command to just view the first 6 scores.
 
-```{r , echo=TRUE}
+```{r, echo=TRUE}
 ## calculate eigenvector centrality scores: statnet
 head(evcent(imf2014.stat, ignore.eval = TRUE))
 ## calculate eigenvector centralization index: statnet
 centralization(imf2014.stat, evcent)
 ```
 
-The igraph command outputs a list of results that can be accessed by name. The eigenvector centrality score for each node can be accessed by calling `$vector`. Another element that might be of interest is the graph level eigenvector centralization score, `$centralization`. 
+The igraph `centr_eigen()` function returns a list of results that can be accessed by name. The eigenvector centrality score for each node can be accessed via the `vector` attribute. Another element that might be of interest is the graph level eigenvector centralization score, `centralization`. 
+
 ```{r, echo=TRUE}
 ## calculate eigenvector centrality scores: igraph
-temp <- centr_eigen(imf2014.ig, directed = T)
+temp <- centr_eigen(imf2014.ig, directed = TRUE)
 names(temp)
 length(temp$vector)
 head(temp$vector)
