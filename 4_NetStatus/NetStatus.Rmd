@@ -46,7 +46,7 @@ The third dataset (imf2014) is from the International Monetary Fund, where a tie
 
 Inspect the basic network descriptors for the `imf2014` network. For this exercise, refer to Week 1 tutorial. This will help you get familiar with the dataset you are using.
 
-Find network size, type (un/directed, un/weighted, bipartite) and available attributes of vertices and edges
+Find network size, type (un/directed, un/weighted, bipartite) and available attributes of vertices and edges:
 
 ```{r describe, exercise=TRUE}
 #Find network size and type
@@ -114,7 +114,7 @@ gotlike.nodes <- data.frame(
 )
 ```
 
-View the first 6 rows of your new dataframes:
+Use the `head()` function to the first 6 rows of your new dataframes:
 
 ```{r degrees, exercise=TRUE}
 
@@ -127,7 +127,7 @@ head(gotlike.nodes)
 
 ## Eigenvector Centrality
 
-We use `evcent` to calculate node level eigenvector centrality scores in statnet, and the familiar `centralization` score with the correct option to calculate network centralization. We are using the `head` command to just view the first 6 scores.
+In statnet, we use `evcent()` to calculate node level eigenvector centrality scores in statnet, and the familiar `centralization()` score with the correct option to calculate network centralization. As above, we are using the `head` command to just view the first 6 scores.
 
 ```{r, echo=TRUE}
 ## calculate eigenvector centrality scores: statnet
@@ -157,28 +157,26 @@ Add the eigenvector centrality node score onto your node level measures datafram
 ```{r, echo=TRUE}
 #add eigenvector centrality to node measures
 imf2014.nodes$eigen <- evcent(imf2014.stat)
-#arrange descending and return top 5 nodes
-arrange(imf2014.nodes, desc(eigen)) %>%
-  slice(1:5)
+#show nodes with the 5 highest eigenvector centralitiy.
+imf2014.nodes %>% slice_max(eigen, n = 5)
 ```
 
 ### Exercise: Eigenvector Centrality
+
 Create a similar table of the eigenvector values for the `gotlike` dataset, and find the 5 nodes with highest eigenvector centralitiy.
 
 ```{r eigen, exercise=TRUE}
 #add eigenvector centrality to node measures
 
-#arrange descending and return top 5 nodes
+#show nodes with the 5 highest eigenvector centralitiy.
 
 ```
 
 ```{r eigen-solution}
 #add eigenvector centrality to node measures
 gotlike.nodes$eigen <- evcent(gotlike.stat)
-#arrange descending and return top 5 nodes
-arrange(gotlike.nodes, desc(eigen)) %>%
-  slice(1:5)
-
+#show nodes with the 5 highest eigenvector centralitiy.
+gotlike.nodes %>% slice_max(eigen, n = 5)
 ```
 
 ### ADVANCED Exercise 2: Eigenvector Centrality
@@ -187,7 +185,7 @@ Now try creating a similar table of the eigenvector centrality values for the `i
 ```{r eigen2, exercise=TRUE}
 #create node measures incuding eigenvector centrality 
 
-#arrange descending and return top 5 nodes
+#show nodes with the 5 highest eigenvector centralitiy.
 
 ```
 
@@ -198,76 +196,70 @@ imf100.nodes <- data.frame(
   totdegree = sna::degree(imf100.stat),
   indegree = sna::degree(imf100.stat, cmode = "indegree"),
   outdegree = sna::degree(imf100.stat, cmode = "outdegree"),
-  eigen <- evcent(imf100.stat)
+  eigen = evcent(imf100.stat)
 )
-#arrange descending and return top 5 nodes
-arrange(imf100.nodes, desc(eigen)) %>%
-  slice(1:5)
+#show nodes with the 5 highest eigenvector centralitiy.
+imf100.nodes %>% slice_max(eigen, n = 5)
 ```
 
 ## Bonacich Power Centrality
 
-Now, let's try calculating the node-level bonacich power centrality score. This gives us the bonacich power score for each node. Once again, we will only return the first few values using `head`.
+Now, let's calculate the node-level bonacich power centrality scores. igraph's function for this is `power_centrality()`, and statnet's is `bonpow()`. Once again, we will use `head()` to examine just the first 6 rows.
 
 ```{r, echo=TRUE}
-#calculate bon. power centrality for nodes: igraph
+#calculate bonacich power centrality for nodes: igraph
 head(power_centrality(imf2014.ig))
-#calculate bon. power centrality for nodes: igraph
+#calculate bonacich power centrality for nodes: statnet
 head(bonpow(imf2014.stat))
 ```
 
 This time, the two approaches are pretty similar. There is one exception visible - China. A good guess would be that the source of that difference is a major contributing factor to the differences in eigenvector centrality scores. To see why this is, compare the eigenvector scores for China in the previous exercise. 
 
-Note that the routine used by `bonpow()` doesn't appear to incorporate weights, and fails when the adjacency matrix is singular. A matrix is singular when any column can be expressed as a linear combinaton of other columns, as might be found if a node has no connections or if two nodes have the same pattern of friendships). Singular matrices are therefore more likely when weights are ignored. If `bonpow()` returns NaN for all nodes, try substituting `power_centrality()`.
+Note that the routine used by `bonpow()` doesn't appear to incorporate weights, and fails when the adjacency matrix is singular. A matrix is singular when any column can be expressed as a linear combinaton of other columns, as might be found if a node has no connections or if two nodes have the same pattern of friendships). Singular matrices are therefore more likely when weights are ignored. If `bonpow()` returns `NaN` for all nodes, try substituting `power_centrality()`.
 
 ### Exercise: Bonacich Power Centrality
 
-Add the bonachic power centrality scores to the `gotlike.nodes` dataset, and view the nodes with the five highest scores.
+Add the bonacich power centrality scores to the `gotlike.nodes` dataset, and view the nodes with the five highest scores.
 
 ```{r bonacich, exercise=TRUE}
-#add bonachic power centrality to node measures
+#add bonacich power centrality to node measures
 
-#arrange descending and return top 5 nodes
-
+#show nodes with the 5 highest bonacich power centrality.
 ```
 
 ```{r bonacich-solution}
-#add bonachic power centrality to node measures
-gotlike.nodes$bonpow <- power_centrality(gotlike.stat)
-#arrange descending and return top 5 nodes
-arrange(gotlike.nodes, desc(bonpow)) %>%
-  slice(1:5)
-
+#add bonacich power centrality to node measures
+gotlike.nodes$bonpow <- power_centrality(gotlike.ig)
+#show nodes with the 5 highest bonacich power centrality.
+gotlike.nodes %>% slice_max(bonpow, n = 5)
 ```
 
 Now try doing the same for the gotbook data. Are there any differences? What do you expect is true about the different networks?
 
 ```{r bonacich2, exercise=TRUE}
-#add bonachic power centrality to node measures
+#add bonacich power centrality to node measures
 
-#arrange descending and return top 5 nodes
+#show nodes with the 5 highest bonacich power centrality.
 
 ```
 
 ```{r bonacich2-solution}
 #add bonachic power centrality to node measures
-gotbook.nodes$bonpow <- bonpow(gotbook.stat,gmode="graph")
-#arrange descending and return top 5 nodes
-arrange(gotbook.nodes, desc(bonpow)) %>%
-  filter(is.na(bonpow) == FALSE) %>%
-  slice(1:5)
+gotbook.nodes$bonpow <- bonpow(gotbook.stat, gmode="graph")
+#show nodes with the 5 highest bonacich power centrality.
+gotbook.nodes %>% slice_max(bonpow, n = 5)
 
 ```
 
 ## Derived and Reflected Centrality
 
-There are no standard routines in igraph or statnet to calculate the **derived** and **relected** centrality scores. Instead, we need to extract the underlying network adjacency matrix and run some simple matrix operations on the extracted matrix. The basic intution is that these two scores together comprise the Eigenvector centrality score, and thus we can parse them out manually.
+There are no standard routines in igraph or statnet to calculate the **derived** and **reflected** centrality scores. Instead, we need to extract the underlying network adjacency matrix and run some simple matrix operations on the extracted matrix. The basic intuition is that these two scores together comprise the eigenvector centrality score, and thus we can parse them out manually.
 
 ```{r, echo=TRUE}
 mat2014 <- as.matrix(as_adjacency_matrix(imf2014.ig, attr = "weight"))
 ```
 
-To calculate the proportion of centrality that is received, we first square the adjacency matrix. The diagonal of the adjacency matrix is equal to the the square of node degree. We then divide this diagonal (sqared degree) by total sqaured indegree (calculated by rowSums) to get the proportion of received centrality.
+To calculate the proportion of centrality that is received, we first square the adjacency matrix. The diagonal of the adjacency matrix is equal to the the square of node degree. We then divide this diagonal (squared degree) by total squared indegree (calculated by rowSums) to get the proportion of received centrality.
 
 ```{r, echo=TRUE}
 #square the adjacency matrix
@@ -283,12 +275,12 @@ imf2014.nodes$rc <-
 imf2014.nodes$eigen.rc <- imf2014.nodes$eigen * imf2014.nodes$rc
 ```
 
-If total centraltiy is 1, then derived centrality is simply 1 - the proportion of eigenvector centrality due to received centrality. 
+If total centrality is 1, then derived centrality is simply 1 - the proportion of eigenvector centrality due to received centrality. 
 
 ```{r, echo=TRUE}
 #Calculate the proportion of derived centrality.
 imf2014.nodes$dc <- 1 - diag(mat2014sq) / rowSums(mat2014sq)
-#replace missing values with 0
+#replace missing values with 1
 imf2014.nodes$dc <- ifelse(is.nan(imf2014.nodes$dc), 1, imf2014.nodes$dc)
 #Calculate received eigenvalue centrality
 imf2014.nodes$eigen.dc <- imf2014.nodes$eigen * imf2014.nodes$dc
