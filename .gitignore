@@ -9,5 +9,6 @@ rsconnect/
 # ignore generated images and files
 NetDegree_files/
 NetStatus_files/
+NetBrokerage_files/
 # mac stuff
 .DS_Store
