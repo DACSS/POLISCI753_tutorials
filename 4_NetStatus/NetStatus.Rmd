@@ -168,14 +168,14 @@ Create a similar table of the eigenvector values for the `gotlike` dataset, and 
 ```{r eigen, exercise=TRUE}
 #add eigenvector centrality to node measures
 
-#show nodes with the 5 highest eigenvector centralitiy.
+#show nodes with the 5 highest eigenvector centrality.
 
 ```
 
 ```{r eigen-solution}
 #add eigenvector centrality to node measures
 gotlike.nodes$eigen <- evcent(gotlike.stat)
-#show nodes with the 5 highest eigenvector centralitiy.
+#show nodes with the 5 highest eigenvector centrality.
 gotlike.nodes %>% slice_max(eigen, n = 5)
 ```
 
@@ -185,7 +185,7 @@ Now try creating a similar table of the eigenvector centrality values for the `i
 ```{r eigen2, exercise=TRUE}
 #create node measures incuding eigenvector centrality 
 
-#show nodes with the 5 highest eigenvector centralitiy.
+#show nodes with the 5 highest eigenvector centrality.
 
 ```
 
@@ -198,7 +198,7 @@ imf100.nodes <- data.frame(
   outdegree = sna::degree(imf100.stat, cmode = "outdegree"),
   eigen = evcent(imf100.stat)
 )
-#show nodes with the 5 highest eigenvector centralitiy.
+#show nodes with the 5 highest eigenvector centrality.
 imf100.nodes %>% slice_max(eigen, n = 5)
 ```
 
@@ -288,7 +288,8 @@ imf2014.nodes$eigen.dc <- imf2014.nodes$eigen * imf2014.nodes$dc
 
 ## Compare Centrality Scores
 
-We built the node measure dataframes above, now lets sort and inspect.
+We built the node measure dataframes above, now let's sort and inspect.
+
 ```{r, echo=TRUE}
 #identify nodes with five highest received centrality scores
 arrange(imf2014.nodes, desc(eigen.rc)) %>%
@@ -298,7 +299,7 @@ arrange(imf2014.nodes, desc(eigen.dc)) %>%
   slice(1:5)
 ```
 
-We can also use the tidyverse command `filter` to select particular cases to view. For example, we might want to compare the scores for a particular country, such as Costa Rica.
+We can also use the dplyr `filter()` function to select particular cases to view. For example, we might want to compare the scores for a particular country, such as Costa Rica.
 
 ```{r, echo=TRUE}
 filter(imf2014.nodes, name == "Costa Rica")
@@ -318,7 +319,7 @@ filter(imf2014.nodes, name %in% c("Belgium", "Italy"))
 
 ## ADVANCED: Centrality Score Distributions
 
-Let's look at the distributions of these scores. While we could use the `hist` command multiple times to visualize each node score separately, using tidyr and ggplot2 provides an easier solution to view the distribution of all variables in the dataset at once. We first reshape the dataset, then use ggplot grouping by variable name. The ggplot2 histogram commands are introduced in the BasicData tutorial.
+Let's look at the distributions of these scores. While we could use the `hist()` function (repeatedly) to visualize each node score separately, using tidyr and ggplot2 provides an easier solution to view the distribution of all variables in the dataset at once. We first reshape the dataset, then use ggplot grouping by variable name. 
 
 ```{r, echo=TRUE}
 imf2014.nodes %>%
@@ -363,7 +364,7 @@ gotlike.nodes %>%
 
 ## ADVANCED: Centrality Measure Correlations
 
-Another neat way to see how related the scores are to one another is to find correlations between all of them and then visualize. Traditionally, this is a difficult step in data exploration and takes a lot of manual manipulation. A new package, corrr, adopts the tidyverse approach to exploring correlations. [See the original blogpost by Simon Jackson for more information.](https://drsimonj.svbtle.com/exploring-correlations-in-r-with-corrr) The commands just automatically take care of lots of things that you would otherwise need to do manually.
+Another neat way to see how related the scores are to one another is to find correlations between all of them and then visualize. Traditionally, this is a difficult step in data exploration and takes a lot of manual manipulation. A new package, corrr, adopts the tidyverse approach to exploring correlations. [See the original blogpost by Simon Jackson for more information.](https://drsimonj.svbtle.com/exploring-correlations-in-r-with-corrr)
 Let's look at the correlations between all scores now.
 
 ```{r, echo=TRUE}
@@ -404,15 +405,19 @@ temp <- imf100.nodes %>%
          bonpow) %>%
   correlate() %>%
   rearrange()
+
 fashion(temp)
 rplot(temp)
+
 ## gotbook dataset
 temp <- gotbook.nodes %>%
   select(degree, eigen, eigen.rc, eigen.dc) %>%
   correlate() %>%
   rearrange()
+
 fashion(temp)
 rplot(temp)
+
 ## gotlike dataset
 temp <- gotlike.nodes %>%
   select(totdegree,
@@ -424,6 +429,7 @@ temp <- gotlike.nodes %>%
          bonpow) %>%
   correlate() %>%
   rearrange()
+
 fashion(temp)
 rplot(temp)
 ```
