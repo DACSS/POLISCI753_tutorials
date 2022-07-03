@@ -114,7 +114,7 @@ gotlike.nodes <- data.frame(
 )
 ```
 
-View the first 6 rows of your new dataframe:
+View the first 6 rows of your new dataframes:
 
 ```{r degrees, exercise=TRUE}
 
@@ -123,7 +123,6 @@ View the first 6 rows of your new dataframe:
 ```{r degrees-solution}
 head(imf2014.nodes)
 head(gotlike.nodes)
-
 ```
 
 ## Eigenvector Centrality
@@ -137,7 +136,7 @@ head(evcent(imf2014.stat, ignore.eval = TRUE))
 centralization(imf2014.stat, evcent)
 ```
 
-The igraph `centr_eigen()` function returns a list of results that can be accessed by name. The eigenvector centrality score for each node can be accessed via the `vector` attribute. Another element that might be of interest is the graph level eigenvector centralization score, `centralization`. 
+The igraph `centr_eigen()` function returns a list of results that can be accessed by name. The eigenvector centrality score for each node can be accessed via the `vector` element. Another element that might be of interest is the graph level eigenvector centralization score, `centralization`. 
 
 ```{r, echo=TRUE}
 ## calculate eigenvector centrality scores: igraph
