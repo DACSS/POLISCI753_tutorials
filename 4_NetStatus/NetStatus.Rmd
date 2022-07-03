@@ -94,6 +94,26 @@ And do the same for the Game of Thrones data:
 
 ```
 
+```{r degree3-solution}
+#igraph version:
+
+gotlike.nodes <- data.frame(
+  name = V(gotlike.ig)$name,
+  totdegree = igraph::degree(gotlike.ig, loops = FALSE),
+  indegree = igraph::degree(gotlike.ig, mode = "in", loops = FALSE),
+  outdegree = igraph::degree(gotlike.ig, mode = "out", loops = FALSE)
+)
+
+#statnet version:
+
+gotlike.nodes <- data.frame(
+  name = gotlike.stat %v% "vertex.names",
+  totdegree = sna::degree(gotlike.stat),
+  indegree = sna::degree(gotlike.stat, cmode = "indegree"),
+  outdegree = sna::degree(gotlike.stat, cmode = "outdegree")
+)
+```
+
 View the first 6 rows of your new dataframe:
 
 ```{r degrees, exercise=TRUE}
