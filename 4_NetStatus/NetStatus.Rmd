@@ -150,7 +150,7 @@ temp$centralization
 Once again, igraph and statnet give completely different scores. This can be attributed in part to the fact that by default, igraph rescales scores with the option `scale = TRUE`. Another contributor may be the defaults for using weighted network data, although turning off the default weights for statnet using the option `ignore.eval = TRUE` doesn't seem to matter.
 
 I suspect that the remainder of the difference in the scores produced by the two measures is attributable to different approaches to dealing with directed networks. A little digging on the internet reveals that part of the issue may also be due to the fact that we are providing directed graphs to the routine. [Evidently, igraph is using the incoming ties to calculate eigenvector centrality.](https://stackoverflow.com/questions/21035598/what-is-evcent-returning-for-directed-graphs) 
-[The developer of statnet discusses the issue of eigenvector centrality for directed networks more generally here, and recommends using Bonachic power and other related measures for directed networks.](http://mailman13.u.washington.edu/pipermail/statnet_help/2015/002170.html)
+[The developer of statnet discusses the issue of eigenvector centrality for directed networks more generally here, and recommends using Bonachic power and other related measures for directed networks.](https://web.archive.org/web/20190725014309/http://mailman13.u.washington.edu/pipermail/statnet_help/2015/002170.html)
 
 Add the eigenvector centrality node score onto your node level measures dataframe for imf2014, and find the top 5 values. 
 
