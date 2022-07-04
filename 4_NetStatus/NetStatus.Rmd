@@ -127,7 +127,7 @@ head(gotlike.nodes)
 
 ## Eigenvector Centrality
 
-In statnet, we use `evcent()` to calculate node level eigenvector centrality scores in statnet, and the familiar `centralization()` score with the correct option to calculate network centralization. As above, we are using the `head` command to just view the first 6 scores.
+In statnet, we use `evcent()` to calculate node-level eigenvector centrality scores in statnet, and the familiar `centralization()` score with the function "evcent" to calculate the network-level eigenvector centralization. As above, we are using the `head` command to just view the first 6 node-level eigenvector centrality scores.
 
 ```{r, echo=TRUE}
 ## calculate eigenvector centrality scores: statnet
@@ -136,7 +136,7 @@ head(evcent(imf2014.stat, ignore.eval = TRUE))
 centralization(imf2014.stat, evcent)
 ```
 
-The igraph `centr_eigen()` function returns a list of results that can be accessed by name. The eigenvector centrality score for each node can be accessed via the `vector` element. Another element that might be of interest is the graph level eigenvector centralization score, `centralization`. 
+The igraph `centr_eigen()` function returns a list of results that can be accessed by name. The eigenvector centrality score for each node can be accessed via the `vector` element. The `centralization` element contains the network-level eigenvector centralization score. 
 
 ```{r, echo=TRUE}
 ## calculate eigenvector centrality scores: igraph
