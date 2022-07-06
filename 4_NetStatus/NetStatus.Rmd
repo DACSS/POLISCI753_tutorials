@@ -127,7 +127,7 @@ head(gotlike.nodes)
 
 ## Eigenvector Centrality
 
-In statnet, we use `evcent()` to calculate node-level eigenvector centrality scores in statnet, and the familiar `centralization()` score with the function "evcent" to calculate the network-level eigenvector centralization. As above, we are using the `head` command to just view the first 6 node-level eigenvector centrality scores.
+In statnet, we use `evcent()` to calculate node-level eigenvector centrality scores in statnet, and the familiar `centralization()` function with the parameter "evcent" to calculate the network-level eigenvector centralization. As above, we are using the `head` command to just view the first 6 node-level eigenvector centrality scores.
 
 ```{r, echo=TRUE}
 ## calculate eigenvector centrality scores: statnet
@@ -245,7 +245,7 @@ Now try doing the same for the gotbook data. Are there any differences? What do 
 
 ```{r bonacich2-solution}
 #add bonachic power centrality to node measures
-gotbook.nodes$bonpow <- bonpow(gotbook.stat, gmode="graph")
+gotbook.nodes$bonpow <- bonpow(gotbook.stat, gmode = "graph")
 #show nodes with the 5 highest bonacich power centrality.
 gotbook.nodes %>% slice_max(bonpow, n = 5)
 
