@@ -180,7 +180,7 @@ gotlike.nodes %>% slice_max(eigen, n = 5)
 ```
 
 ### ADVANCED Exercise 2: Eigenvector Centrality
-Now try creating a similar table of the eigenvector centrality values for the `imf100` version of the imf2014 data, and find the 5 nodes with highest eigenvector centralitiy. There is no existing imf100.node dataframe, and it will need to be created.
+Now try creating a similar table of the eigenvector centrality values for the `imf100` version of the imf2014 data, and find the 5 nodes with highest eigenvector centrality. There is no existing imf100.node dataframe, and it will need to be created.
 
 ```{r eigen2, exercise=TRUE}
 #create node measures incuding eigenvector centrality 
@@ -210,12 +210,12 @@ Now, let's calculate the node-level bonacich power centrality scores. igraph's f
 #calculate bonacich power centrality for nodes: igraph
 head(power_centrality(imf2014.ig))
 #calculate bonacich power centrality for nodes: statnet
-head(bonpow(imf2014.stat))
+head(sna::bonpow(imf2014.stat))
 ```
 
 This time, the two approaches are pretty similar. There is one exception visible - China. A good guess would be that the source of that difference is a major contributing factor to the differences in eigenvector centrality scores. To see why this is, compare the eigenvector scores for China in the previous exercise. 
 
-Note that the routine used by `bonpow()` doesn't appear to incorporate weights, and fails when the adjacency matrix is singular. A matrix is singular when any column can be expressed as a linear combinaton of other columns, as might be found if a node has no connections or if two nodes have the same pattern of friendships). Singular matrices are therefore more likely when weights are ignored. If `bonpow()` returns `NaN` for all nodes, try substituting `power_centrality()`.
+Note that the Bonacich calculations don't incorporate weights or directedness, and may fail when the adjacency matrix is singular. A matrix is singular when any column can be expressed as a linear combination of other columns, as might be found if a node has no connections or if two nodes have the same pattern of friendships. Singular matrices are therefore more likely when weights are ignored. If `bonpow()` returns `NaN` for all nodes, try substituting `power_centrality()`.
 
 ### Exercise: Bonacich Power Centrality
 
