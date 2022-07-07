@@ -21,25 +21,25 @@ tutorial_options(exercise.timelimit = 10)
 This tutorial will demonstrate use of the R commands used to measure aspects of network brokerage introduced in Week 5's Lecture:
 
 * Closeness centrality & centralization
-* Betweeness centrality & centralization
+* Betweenness centrality & centralization
 * Constraint
 * Gould-Fernandez Brokerage
 
-We will be using several datasets for this exercise. The first two are from the Swiss Climate Data. The new data is the Preference Distance Network. It is an adjacency matrix created for stakeholders in the Swiss climate policy debate, indicating how different node’s policy preferences are. The data includes several node attributes. The Influence network was previously used in weeks 2 and 3, and indicates whether or not the stakeholders nominated each other (or themselves) as influential in the policy debate. The original network contains loops, which are handled better by statnet.
+We will be using several datasets for this exercise. New this week is the Preference Distance Network (`climpref`) from the Swiss Climate Data. It is an adjacency matrix created for stakeholders in the Swiss climate policy debate, indicating how different nodes' policy preferences are. The data includes several node attributes. The Influence network (`climinfl`) was previously used in weeks 2 and 3, and indicates whether or not the stakeholders nominated each other (or themselves) as influential in the policy debate. The original network contains loops, which are handled better by statnet.
 
 - *climpref.ig* - igraph network object
 - *climpref.stat* - statnet network object
 - *climinfl.ig* - igraph network object
 - *climinfl.stat* - statnet network object
 
-For those who are interested, exercises can also be completed using the GoT book data. This network was scraped from the 5 published books, and a tie indicates the number of times that two characters are mentioned within close proximity of each other. This abbreviated dataset consists only of characters who appear at least 10 times throughout the 5 books, and all ties between characters who co-occur in the text together fewer than 5 times were removed.
+For those who are interested, exercises can also be completed using the Game of Thrones (GoT) book data from the previous weeks' tutorials.
 
 - *gotbook.ig* - igraph network object
 - *gotbook.stat* - statnet network object
 
 ## Basic Network Description
 
-1. Inspect the basic  network descriptors for the `climpref`, `climinfl` and `gotbook` networks. For this exercise, refer to Week 1 tutorial. This will help you get familiar with the dataset you are using.
+1. Inspect the basic network descriptors for the `climpref`, `climinfl` and `gotbook` networks. For this exercise, refer to Week 1 tutorial. This will help you get familiar with the datasets. (No solutions are provided for this process this week!)
 
 Find network size, type (un/directed, un/weighted, bipartite) and available attributes of vertices and edges:
 
@@ -53,19 +53,19 @@ Find network size, type (un/directed, un/weighted, bipartite) and available attr
 #Dyad census, triad census, number and size of components, isolates
 ```
 
-## Creating a dataframe of centrality scores
+## Creating a Dtaframe of Centrality Scores
 
 Using tutorials 3 and 4 as a guide -- specifically sections 3 and 4 of tutorial 4 -- create a dataframe of the degree and centrality values that we have already learned about for the three datasets in this tutorial. Call them `climinfl.nodes`, `climpref.nodes` and `gotbook.nodes`. Use the statnet versions of these datasets to attach the values. 
 
 ```{r values, exercise=TRUE, exercise.lines=10}
-#Create each dataframe with the (1) vertex names, (2) total degree values, (3) eigenvector centrality, (4) bonacich power, (5) reflected and (6) derived eigen values to the dataframe
+#Create each dataframe with the (1) vertex names, (2) total degree values, (3) eigenvector centrality, (4) Bonacich power, (5) reflected and (6) derived eigenvalues to the dataframe
 
 #head(xxx.nodes) for each dataset to view the first 6 values
 ```
 
-## Calculate closeness centrality
+## Calculate Closeness Centrality
 
-The closeness centrality of a node is defined as the sum of the geodesic distances between that node and all other nodes in a network. Let's start by just inspecting the closeness scores obtained using the two programs. Because geodesic distance depends on whether or not the network is directed, it is important to specify this option correctly. In statnet, the option that must be specified is `gmode = ("digraph", "graph")`, with "digraph" as the default. In igraph, the option is `mode = ("in", "out", "all", "total")` with "out" as the default. If the network is undirected, then `mode =` is ignored. Weights, if available as the *weight* edge attribute or specified using the `weight =` option, are used in the calculation of distance.
+The closeness centrality of a node is defined as the sum of the geodesic distances between that node and all other nodes in a network. Let's start by just inspecting the closeness scores obtained using the two libraries. Because geodesic distance depends on whether or not the network is directed, it is important to specify this option correctly. In statnet, the option that must be specified is `gmode = ("digraph", "graph")`, with "digraph" as the default (for "directed graph"). In igraph, the option is `mode = ("in", "out", "all", "total")` with "out" as the default. If the network is undirected, then `mode` is ignored. Weights, if available as the *weight* edge attribute or specified using the `weight` argument, are used in the calculation of distance.
 
 ```{r, echo=TRUE}
 #calculate closeness centrality: igraph
@@ -74,7 +74,7 @@ head(igraph::closeness(climpref.ig))
 head(sna::closeness(climpref.stat, gmode = "graph"))
 ```
 
-Once again, the scores returned by the two libraries are very different and it takes some sleuthing to understand why the difference exists. It turns out that while statnet uses the traditional closeness measure by default, igraph uses the inverse closeness measure. When a graph is not connected (i.e., there are multiple components), then closeness is ill-defined as some nodes aren't reachable from other nodes. An alternative version of closeness using the sum of inverse distances (*suminv*), can be calculated with a similar conceptual underpinning, but it works even on disconnected graphs, as does the related *Gil-Schmidt* power index. It is essential to correctly specify whether the graph is directed or undirected. The centralization measure is set with option `cmode = ("directed", "undirected", "suminvundir", "suninvdir", "gil-schmidt")`.  Although statnet defaults to the first two, the *suninv* scores are often going to be preferable - so it makes sense for this to be igraph's default.
+Once again, the scores returned by the two libraries are very different and it takes some sleuthing to understand why the difference exists. It turns out that while statnet uses the traditional closeness measure by default, igraph uses the inverse closeness measure. When a graph is not connected (i.e., there are multiple components), then closeness is ill-defined as some nodes aren't reachable from other nodes. An alternative version of closeness using the sum of inverse distances (*suminv*) can be calculated with a similar conceptual underpinning, but it works even on disconnected graphs, as does the related *Gil-Schmidt* power index. It is essential to correctly specify whether the graph is directed or undirected. The centralization measure is set with option `cmode = ("directed", "undirected", "suminvundir", "suninvdir", "gil-schmidt")`.  Although statnet defaults to the first two, the *suninv* scores are often going to be preferable - so it makes sense for this to be igraph's default.
 
 ```{r, echo=TRUE}
 #calculate closeness centrality: statnet
@@ -152,7 +152,7 @@ igraph::betweenness(climpref.ig, directed = FALSE)
 sna::betweenness(climpref.stat, gmode = "graph")
 ```
 
-It is clear that the difference between the two is likely due to the use of weights to calculate geodesics by igraph - see the tutorial from Week 2 for a discussion. Setting the option `weights = NA` can avoid weights in igraph.
+It is clear that the difference between the two is likely due to the use of weights to calculate geodesics by igraph; see the tutorial from Week 2 for a discussion. Setting the option `weights = NA` can avoid weights in igraph.
 
 ```{r}
 head(igraph::betweenness(climpref.ig, directed=FALSE, weights=NA))
@@ -216,7 +216,7 @@ centralization(gotbook.stat, FUN = "betweenness", mode = "graph")
 
 ## Calculate Network Constraint (Burt)
 
-Constraint is a measure of the redundancy of a node's connections. It ranges from 0 to 1, with 0 being a complete lack, and 1 being complete redundancy. The `constraints()` function is only available in igraph, and automatically uses the available weight vector.
+Constraint is a measure of the redundancy of a node's connections. It ranges from 0 to 1, with 0 meaning no redundancy, and 1 meaning full redundancy. The `constraints()` function is only available in igraph, and automatically uses the available weight vector.
 
 ```{r, echo=TRUE}
 constraint(climpref.ig)
@@ -262,9 +262,9 @@ Gould-Fernandez brokerage is calculated with respect not only to the pattern of 
 names(brokerage(climinfl.stat, cl = climinfl.nodes$orgtype5))
 ```
 
-The `brokerage` function returns a long list of elements, including observed, expected, and standardized brokerage scores. Our primary interest is in the element `brokerage(g)$znli`. This element is a matrix containing five distinct brokerage scores, capturing the normalized number of triads in which the specified node plays one of the five prototypical Gould-Fernandez brokerage roles: coordinator, itinerant, representative, gatekeeper, and liaison. There is also a *total* score returned which is calculated as a sum of the five distinct brokerage roles. Total brokerage can be calculated for undirected networks, but not the breakdown of the 5 brokerage roles. The element `raw.nli` returns the same information but contains the total number of triads instead of the normalized score.
+The `brokerage` function returns a long list of elements, including observed, expected, and standardized brokerage scores. Our primary interest is in the element `brokerage(g)$znli`. This element is a matrix containing five distinct brokerage scores, capturing the normalized number of triads in which the specified node plays one of the five prototypical Gould-Fernandez brokerage roles: coordinator, itinerant, representative, gatekeeper, or liaison. There is also a *total* score returned, which is calculated as a sum of the five distinct brokerage roles. Total brokerage can be calculated for undirected networks, but not the breakdown of the 5 brokerage roles. The element `raw.nli` returns the same information, but contains the total number of triads instead of the normalized score.
 
-Lets first inspect the Gould-Fernandez brokerage scores, then add these scores to the climinfl.nodes dataframe.
+Let's first inspect the Gould-Fernandez brokerage scores, then add these scores to the `climinfl.nodes` dataframe.
 
 ```{r, echo=TRUE}
 #return matrix of standardized brokerage scores
@@ -285,7 +285,7 @@ climinfl.nodes <- climinfl.nodes %>%
 
 ### Exercise: Brokerage
 
-In order to interpret the brokerage scores, let's look again at the `trade100` dataset. The dataframe that you previously created with the degree, centralization and brokerage scores for the nodes has been recreated for you in this tutorial. The brokerage scores for this dataset are used with the vertex attribute "Continent". Let's analyze the first and last 10 nodes of this dataset. To do this, use the `arrange` function piped though the `slice` function. We introduced these in Tutorial 3.  
+In order to interpret the brokerage scores, let's look again at the `trade100` dataset. The dataframe that you previously created with the degree, centralization and brokerage scores for the nodes has been recreated for you in this tutorial. The brokerage scores for this dataset are used with the vertex attribute "Continent". Let's analyze the first and last 10 nodes of this dataset. To do this, pipe the dataframe through the `slice_max` function, as we have been doing in these tutorials.  
 
 ```{r broke2, exercise=TRUE}
 
@@ -295,13 +295,11 @@ In order to interpret the brokerage scores, let's look again at the `trade100` d
 ```{r broke2-solution, echo=FALSE}
 # arrange in descending order
 trade100.nodes %>%
-  arrange(desc(broker.tot)) %>%
-  slice(1:10)
+  slice_max(broker.tot, n = 10)
 
 # arrange in ascending order (default, doesn't need specification)
 trade100.nodes %>%
-  arrange(broker.tot) %>%
-  slice(1:10)
+  slice_min(broker.tot, n = 10)
 
 ```
 
