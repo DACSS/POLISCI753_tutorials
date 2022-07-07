@@ -244,14 +244,14 @@ Using the `constraint()` function, calculate network constraint scores for the a
 #add measure to climinfl.nodes 
 climinfl.nodes$constraint <- constraint(climinfl.ig)
 #find the nodes with highest and lowest constraint
-arrange(climinfl.nodes, constraint) %>% slice(1:5)
-arrange(climinfl.nodes, desc(constraint)) %>% slice(1:5)
+climinfl.nodes %>% slice_max(constraint, n = 5)
+climinfl.nodes %>% slice_min(constraint, n = 5)
 #calculate constraint of gotbook characters
 #add measure to gotbook.nodes
 gotbook.nodes$constraint <- constraint(gotbook.ig)
 #find the nodes with highest and lowest constraint
-arrange(gotbook.nodes, constraint) %>% slice(1:5)
-arrange(gotbook.nodes, desc(constraint)) %>% slice(1:5)
+gotbook.nodes %>% slice_max(constraint, n = 5)
+gotbook.nodes %>% slice_min(constraint, n = 5)
 ```
 
 ## Gould-Fernandez Brokerage
@@ -285,7 +285,7 @@ climinfl.nodes <- climinfl.nodes %>%
 
 ### Exercise: Brokerage
 
-In order to interpret the brokerage scores, let's look again at the `trade100` dataset. The dataframe that you previously created with the degree, centralization and brokerage scores for the nodes has been recreated for you in this tutorial. The brokerage scores for this dataset are used with the vertex attribute "Continent". Let's analyze the first and last 10 nodes of this dataset. To do this, pipe the dataframe through the `slice_max` function, as we have been doing in these tutorials.  
+In order to interpret the brokerage scores, let's look again at the `trade100` dataset. The dataframe that you previously created with the degree, centralization and brokerage scores for the nodes has been recreated for you in this tutorial. The brokerage scores for this dataset are used with the vertex attribute "Continent". Let's analyze the first and last 10 nodes of this dataset. To do this, pipe the dataframe through the `slice_min` and `slice_max` functions, as we have been doing in these tutorials.  
 
 ```{r broke2, exercise=TRUE}
 
@@ -294,13 +294,10 @@ In order to interpret the brokerage scores, let's look again at the `trade100` d
 
 ```{r broke2-solution, echo=FALSE}
 # arrange in descending order
-trade100.nodes %>%
-  slice_max(broker.tot, n = 10)
+trade100.nodes %>% slice_max(broker.tot, n = 10)
 
-# arrange in ascending order (default, doesn't need specification)
-trade100.nodes %>%
-  slice_min(broker.tot, n = 10)
-
+# arrange in ascending order
+trade100.nodes %>% slice_min(broker.tot, n = 10)
 ```
 
 
