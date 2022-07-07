@@ -292,11 +292,9 @@ We built the node measure dataframes above, now let's sort and inspect.
 
 ```{r, echo=TRUE}
 #identify nodes with five highest received centrality scores
-arrange(imf2014.nodes, desc(eigen.rc)) %>%
-  slice(1:5)
+imf2014.nodes %>% slice_max(eigen.rc, n = 5)
 #identify nodes with five highest derived centrality scores
-arrange(imf2014.nodes, desc(eigen.dc)) %>%
-  slice(1:5)
+imf2014.nodes %>% slice_max(eigen.dc, n = 5)
 ```
 
 We can also use the dplyr `filter()` function to select particular cases to view. For example, we might want to compare the scores for a particular country, such as Costa Rica.
