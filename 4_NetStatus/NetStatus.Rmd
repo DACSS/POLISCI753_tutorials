@@ -253,7 +253,7 @@ gotbook.nodes %>% slice_max(bonpow, n = 5)
 
 ## Derived and Reflected Centrality
 
-There are no standard routines in igraph or statnet to calculate the **derived** and **reflected** centrality scores. Instead, we need to extract the underlying network adjacency matrix and run some simple matrix operations on the extracted matrix. The basic intuition is that these two scores together comprise the eigenvector centrality score, and thus we can parse them out manually.
+There are no standard routines in igraph or statnet to calculate the **derived** and **reflected** centrality scores. Instead, we need to extract the underlying network adjacency matrix and run some simple matrix operations on the extracted matrix. The underlying concept is that these two scores together comprise the eigenvector centrality score, and thus we can parse them out manually.
 
 ```{r, echo=TRUE}
 mat2014 <- as.matrix(as_adjacency_matrix(imf2014.ig, attr = "weight"))
@@ -362,7 +362,7 @@ gotlike.nodes %>%
 
 ## ADVANCED: Centrality Measure Correlations
 
-Another neat way to see how related the scores are to one another is to find correlations between all of them and then visualize. Traditionally, this is a difficult step in data exploration and takes a lot of manual manipulation. A new package, corrr, adopts the tidyverse approach to exploring correlations. [See the original blogpost by Simon Jackson for more information.](https://drsimonj.svbtle.com/exploring-correlations-in-r-with-corrr)
+Another informative way to see how related the scores are to one another is to find correlations between all of them and then visualize. Traditionally, this is a difficult step in data exploration and takes a lot of manual manipulation. A new package, corrr, adopts the tidyverse approach to exploring correlations. [See the original blogpost by Simon Jackson for more information.](https://drsimonj.svbtle.com/exploring-correlations-in-r-with-corrr)
 Let's look at the correlations between all scores now.
 
 ```{r, echo=TRUE}
