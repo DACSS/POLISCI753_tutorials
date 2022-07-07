@@ -51,7 +51,7 @@ We will also introduce available options for choosing a distance matrix, cluster
 * Clustering using structural equivalence, concor, regular equivalence, and criteron-basedgeneralized blockmodeling 
 * Choosing partition cutpoints
 
-We will be using several datasets for this exercise: `gotmarr` (Game of Thrones marriages), `monks`; sampson's monks (which are also available as liking networks at three different timeponts using data(samplk)), `flomarr`: padgett florentine families, and `gotpart` (Game of Thrones partners, including marriages and affairs).
+We will be using several datasets for this exercise: `gotmarr` (Game of Thrones marriages), `monks`; Sampson's monks (which are also available as liking networks at three different timepoints using data(samplk)), `flomarr`: Padgett Florentine families, and `gotpart` (Game of Thrones partners, including marriages and affairs).
 
 - *gotmarr.ig* - Game of Thrones marriages and engagements igraph network object
 - *gotmarr.stat* - Game of Thrones marriages and engagements statnet network object
@@ -59,13 +59,13 @@ We will be using several datasets for this exercise: `gotmarr` (Game of Thrones 
 - *gotpart.ig* - Game of Thrones marriages and affairs igraph network object
 - *gotpart.stat* - Game of Thrones marriages and affairs statnet network object
 
-- *flomarr.ig* - Floretine Families igraph network object
-- *flomarr.stat* - Floretine Families statnet network object
+- *flomarr.ig* - Florentine Families igraph network object
+- *flomarr.stat* - Florentine Families statnet network object
 
-- *monks.ig* - Game of Thrones marriages igraph network object
+- *monks.ig* - Sampson's monks igraph network object
 - *monks.stat* - Sampson's monks statnet network object
 
-We will also be creating structural equivalence models for each of these datasets. Replace the word dataset with the name of the dataset. We will learn more about these later in the tutorial:
+We will also be creating structural equivalence models for each of these datasets, using the following naming conventions:
 
 - *dataset.se* - default 
 - *dataset.avg.se* - cluster method = average
@@ -75,31 +75,23 @@ We will also be creating structural equivalence models for each of these dataset
 
 ## Basic Network Description
 
-### 1. Inspect basic **network descriptors** 
-Inspect the network attributes of the `flomarr`, `gotmarr` and `gotpart` and `monks` networks. For this exercise, refer to Week 1 tutorial. This will help you get familiar with the dataset you are using.
+As always, first inspect the network attributes of the `flomarr`, `gotmarr` and `gotpart` and `monks` networks. For this exercise, refer to Week 1 tutorial. This will help you get familiar with the dataset you are using.
 
-Find network size, type (un/directed, un/weighted, bipartite) and available attributes of vertices and edges
+Find network size, type (un/directed, un/weighted, bipartite) and available attributes of vertices and edges:
 
 ```{r describe, exercise=TRUE}
 #Find network size and type
 ```
 
-```{r describe-solution}
-#Find network size and type
-```
+## Basic Network Structure
 
-### 2. Inspect the Network Structure
-Inspect the **dyads, triads, and component structure** of the `flomarr`, `gotmarr` and `gotpart` and `monks` networks (refer to tutorial 2). Pay attention to whether network is connected, as it affects the otions you use for closeness centrality.
+Inspect the dyads, triads, and component structure of the `flomarr`, `gotmarr` and `gotpart` and `monks` networks (refer to tutorial 2). Pay attention to whether network is connected, as it affects the options you use for closeness centrality.
 
 ```{r structure, exercise=TRUE}
 #Dyad census, triad census, number and size of components, isolates
 ```
 
-```{r structure-solution}
-#Dyad census, triad census, number and size of components, isolates
-```
-
-### 3. Create a *network*.nodes dataframe 
+## Create a *network*.nodes dataframe 
 Create a dataframe of standard, applicable node-level measures (from weeks 3-5.) Note that the routine below requires two custom functions to be used for the calculation of derived and reflected centrality. These functions can be included in network analysis files, or turned into a library and loaded like a standard R library.
 
 ```{r}
@@ -133,7 +125,7 @@ get.brokerage <- function(net, attr = "attr") {
 }
 ```
 
-With those two functions defined, lets condense the three previous weeks exercises calculating varius measures of centrality into a standard routine, with abbreviated notes on when to use each measure.
+With those two functions defined, let's condense the three previous weeks exercises calculating various measures of centrality into a standard routine, with abbreviated notes on when to use each measure.
 
 ```{r}
 #create dataframe with names
