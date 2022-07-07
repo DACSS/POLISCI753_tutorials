@@ -207,10 +207,10 @@ head(gotmarr.nodes) #to see your dataframe
 
 ## Calculate Structural Equivalence
 
-In calculating structural equivalence, we are interested in identifying nodes that have the same pattern of ties with the same neighbors. The statnet function `equiv.clust()` compresses the first two steps of role detection--creating a distance (similarity) matrix and then clustering the nodes on the basis of that matrix--into a single function. The distance matrix is calculated based on the option `method=` and can be set to different distance functions such as hamming, correlation, hamming, or gamma when using structural equivalence `equiv.fun="sedist"` as the basis for clustering.
+In calculating structural equivalence, we are interested in identifying nodes that have the same pattern of ties with the same neighbors. The statnet function `equiv.clust()` compresses the first two steps of role detection--creating a distance (similarity) matrix and then clustering the nodes on the basis of that matrix--into a single function. The distance matrix is calculated based on the option `method` and can be set to different distance functions such as hamming, correlation, euclidean, or gamma when using structural equivalence `equiv.fun = "sedist"` as the basis for clustering. See the [R documentation for `sedist`](https://www.rdocumentation.org/packages/sna/versions/2.6/topics/sedist) for more information.
 
 ```{r}
-#calculate equivalence from specified distance marix
+#calculate equivalence from specified distance matrix
 flomarr.se <-
   equiv.clust(flomarr.stat,
               equiv.fun = "sedist",
@@ -255,7 +255,8 @@ monks.se <-
 ```
 
 ## Dendrogram of SE Clusters
-The `equiv.clust()` command returns an object with several components that will likely be familiar to those of you familiar with hierarchical clustering in general. Lets take a look at the components of the object returned by `equiv.clust()`. 
+
+The `equiv.clust()` command returns an object with several components that will likely be familiar to those of you familiar with hierarchical clustering in general. Let's take a look at the components of the object returned by `equiv.clust()`. 
 
 ```{r}
 #summary of object produced by sedist()
@@ -278,7 +279,7 @@ If we would like to see the names of the nodes in the dendrogram, we can access 
 plot(flomarr.se, labels = flomarr.se$glabels)
 ```
 
-`equiv.clust()` has a default cluster method setting. See help for `hclust()` for additional options. You may want to experiment with using different methods for the option `equiv.clust(..., cluster.method="")`, replacing the default `cluster.method="complete"` with an alternative such as *single, average*, or *ward.D*. How does changing the clustering method change which nodes are closest to each other? For the Florentine Marriages dataset, here are the dedrograms for the alternative settings:
+`equiv.clust()` has a default cluster method setting. See help for `hclust()` for additional options. You may want to experiment with using different methods for the option `equiv.clust(..., cluster.method = "")`, replacing the default `cluster.method = "complete"` with an alternative such as *single, average*, or *ward.D*. How does changing the clustering method change which nodes are closest to each other? For the Florentine Marriages dataset, here are the dendrograms for the alternative settings:
 
 ```{r}
 #with average cluster.method
@@ -333,7 +334,7 @@ What do you notice about the differences? How does the clustering method change 
 
 ### Exercise: Dendrogram
 
-Now, inspect the clusters using one of the other datasets this week: Sampson's monks, GoT marriages, and/or GoT engagements. You may want to experiment with using different methods for the option `equiv.clust(..., cluster.method="")`, replacing the default `cluster.method="complete"` with an alternative such as *single, average*, or *ward.D*. For this tutorial, we've included the .se elements for each dataset with the clustering methods: `dataset.avg.se`, `dataset.sing.se`, `dataset.wrd.se` and, of course, the default `dataset.se`. Simply replace the name with the dataset you want to explore.
+Now, inspect the clusters using one of the other datasets this week: Sampson's monks, GoT marriages, and/or GoT engagements. As before, you may want to experiment with using different methods for the option `equiv.clust(..., cluster.method = "")`, replacing the default `cluster.method = "complete"` with an alternative such as *single, average*, or *ward.D*. For this tutorial, we've included the .se elements for each dataset with the clustering methods: `dataset.avg.se`, `dataset.sing.se`, `dataset.wrd.se` and, of course, the default `dataset.se`. Simply replace the name with the dataset you want to explore.
 
 How does changing the clustering method change which nodes are closest to each other?
 
@@ -384,7 +385,7 @@ In practice, there are different approaches to identifying the best cutpoint to 
 
 ### Exercise: Partitioning Clusters
 
-Now, partition the clusters you have created in the earlier Dendrogram exercise using one of the other datasets this week: `monks`, `gotmarr`, and/or `gotpart`. As in the previous exercise, you can either use the default structural equivalence cluster created for each dataset, or experiment with creating your own equivalence clusters using different clustering methods such as *simple*, *Ward.D* or *average*.
+Now, partition the clusters you have created in the earlier dendrogram exercise using one of the other datasets this week: `monks`, `gotmarr`, and/or `gotpart`. As in the previous exercise, you can either use the default structural equivalence cluster created for each dataset, or experiment with creating your own equivalence clusters using different clustering methods such as *simple*, *Ward.D* or *average*.
 
 ```{r partition, exercise=TRUE, exercise.lines=6}
 #plot equivalence clustering using default or a different clustering method
@@ -414,7 +415,7 @@ rect.hclust(monks.se$cluster, h = 10)
 
 One easy way to inspect the goodness of fit of the partitions that result from the clustering steps above is to use blockmodeling. This is because the goal of structural equivalence clustering is to create a grid of 0 blocks (where there are no relationships) and 1 blocks (with all possible relationships.) In practice, we usually don't find perfect 0 and 1 blocks, but we can look at block density and also the visual blockmodel plot to get a sense of how well the partitioning worked. Note that plotting the underlying network as a blockmodel works best with smaller networks, and can become difficult to understand with larger networks. 
 
-To implement a blockmodel in statnet, we must specify the original network, the equivalence clustering object to use, and the number of partitions. The option `k=` in the `blockmodel` command indicates how many partitions to use in creating the blockmodel. Alternatively, the option `h=` indicates the height at which to cut the dendrogram.
+To implement a blockmodel in statnet, we must specify the original network, the equivalence clustering object to use, and the number of partitions. The option `k` in the `blockmodel` command indicates how many partitions to use in creating the blockmodel. Alternatively, the option `h` indicates the height at which to cut the dendrogram.
 
 ```{r}
 #blockmodel and select partitions
@@ -428,7 +429,7 @@ blk_mod
 plot(blk_mod)
 ```
 
-Note that while it is possible to use the simple `plot()` command to plot the resulting blockmodel object, there are some issues with the plot: the title is strange, and the node labels are difficult to read. Therefore, we are going to create a new function, plot.block(), that is a little more flexible in terms of setting the title and label size for blockmodel plots.
+Note that while it is possible to use the simple `plot()` command to plot the resulting blockmodel object, there are some issues with the plot: the default title is cryptic, and the node labels are difficult to read. Therefore, we are going to create a new function, plot.block(), that is a little more flexible in terms of setting the title and label size for blockmodel plots.
 
 ```{r}
 plot.block <- function(x = blk_mod,
@@ -479,7 +480,7 @@ Now, plot the partitions that you created in the previous exercises using one of
 
 ```{r block, exercise=TRUE, exercise.lines=8}
 #blockmodel and select partitions for one of the other datasets
-blk_mod<-blockmodel(gotmarr.stat,gotmarr.se,k=4)
+blk_mod <- blockmodel(gotmarr.stat, gotmarr.se, k = 4)
 
 #print blockmodel object
 blk_mod
@@ -511,7 +512,7 @@ V(flomarr.ig)$role <-
   blk_mod$block.membership[match(V(flomarr.ig)$name, blk_mod$plabels)]
 ```
 
-Now, we can use the *role* attribute to change the color of plotted nodes in a network plot. Statnet plots aren't that attractive without using ggnet2, which is what we use here. Alternatively, igraph also produces nice looking network plots by default. For more on producing new network plots in R, see the suggested online tutorials linked on Google classroom.
+Now, we can use the *role* attribute to change the color of plotted nodes in a network plot. Statnet plots aren't that attractive without using ggnet2, which is what we use here. Alternatively, igraph also produces nice looking network plots by default. For more on producing new network plots in R, see the suggested online tutorials linked in Google classroom.
 
 ```{r}
 #plot network using "role" to color nodes: statnet
@@ -576,7 +577,7 @@ plot.igraph(
 
 Let's compare network roles to our centrality values we explored in tutorials 3 and 4. Using the *.nodes* dataframe that you created in the earlier part of this tutorial, add the network role value. Then, let's plot the correlations so we can easily compare this value to our centrality values. 
 
-Using the `flomarr.nodes` table created earlier, let's add the role assignments from the `blockmodel` calculations. We then use tidyverse commands to summarage average node measures of centrality by role - are some roles more central than others? 
+Using the `flomarr.nodes` table created earlier, let's add the role assignments from the `blockmodel` calculations. We then use tidyverse commands to summarize average node measures of centrality by role - are some roles more central than others? 
 
 ```{r}
 ###Repeat the blockmodeling and creating the vertex attribute to be able to attach to the .nodes element.
@@ -592,7 +593,8 @@ flomarr.nodes$role <- V(flomarr.ig)$role
 
 #summarize various network statistics by role
 flomarr.nodes %>%
-  select(-name) %>% group_by(role) %>%
+  select(-name) %>% 
+  group_by(role) %>%
   mutate(n = n()) %>%
   summarise_all(mean, na.rm = TRUE) %>%
   as.matrix() %>%
@@ -621,19 +623,19 @@ V(gotmarr.ig)$role <-
 #attach role to .nodes dataframe
 gotmarr.nodes$role <- V(gotmarr.ig)$role
 
-#summarize various network stqtistics by role
+#summarize various network statistics by role
 gotmarr.nodes %>%
-  select(-name) %>% group_by(role) %>%
+  select(-name) %>% 
+  group_by(role) %>%
   mutate(n = n()) %>%
   summarise_all(mean, na.rm = TRUE) %>%
   as.matrix() %>%
   print(digits = 2)
 ```
 
-
-
 ## Structural Equivalence: Weighted
-The statnet package version of the command `sedist()` currently ignores any edge values or weights. Therefore, we will be using the `sedist()` function available in a different r library called `blockmodeling` to create equivalence cluster objects for weighted networks. This is a little tricky to implment in your own version of R, as you will need to install the library *blockmodeling*, and you will also need to transform an igraph `graph` object into a valued adjency matrix that is a `matrix` object. The commands you will need to install the package are provided but are not evaluated here as the package is already installed. This demonstration uses Sampson's monks dataset, where weights are stored as the *nominations* edge attribute.
+
+The statnet package version of the command `sedist()` ignores edge values and weights. Therefore, we will be using the `sedist()` function available in a different R library called `blockmodeling` to create equivalence cluster objects for weighted networks. This is a little tricky to implement in your own R instance, as you will need to install the library *blockmodeling*, and you will also need to transform an igraph `graph` object into a valued adjacency matrix that is a `matrix` object. The commands you will need to install the package are provided but are not evaluated here as the package is already installed. This demonstration uses Sampson's monks dataset, where weights are stored as the *nominations* edge attribute.
 
 ```{r, eval=FALSE, echo=TRUE}
 #install library
@@ -652,7 +654,7 @@ monks.mat[1:5, 1:5]
 In the earlier steps, we established a standard routine for creating a distance matrix, finding an equivalence cluster, partitioning the cluster, and inspecting it visually. There is only one significant change needed for weighted networks: the use of a distance matrix suitable for valued networks, such as euclidean distance or correlation in the initial step. Euclidean distance is traditional, and is the default option.
 
 ```{r}
-#calculate equivalence from specified distance marix
+#calculate equivalence from specified distance matrix
 monks.sedist <- blockmodeling::sedist(monks.mat)
 monks.se <- equiv.clust(monks.stat,
                         equiv.dist = monks.sedist)
@@ -661,7 +663,7 @@ monks.se <- equiv.clust(monks.stat,
 It can be useful to combine these two steps also, like this.
 
 ```{r}
-#calculate equivalence from specified distance marix
+#calculate equivalence from specified distance matrix
 monks.se <- equiv.clust(monks.stat,
                         equiv.dist = blockmodeling::sedist(monks.mat))
 ```
@@ -727,7 +729,7 @@ The CONCOR algorithm is currently only available for R in the concoR package, wh
 
 ```{r, eval=FALSE, echo=TRUE}
 #install devtools if needed
-if ("devtools"   %in% rownames(installed.packages()) == FALSE) {
+if ("devtools" %in% rownames(installed.packages()) == FALSE) {
   install.packages("devtools")
 }
 #install concoR library
@@ -736,7 +738,7 @@ devtools::install_github("aslez/concoR")
 library(concoR)
 ```
 
-The function `concor_hca()` starts with an adjacency matrix, just like the blockmodeling package, and returns a block membership list, similar to the one returned by `blockmodel()`. Just as with the `blockmodel` command, we must indicate the number of desired partitions for CONCOR to return using the parameter `p=...`. 
+The function `concor_hca()` starts with an adjacency matrix, just like the blockmodeling package, and returns a block membership list, similar to the one returned by `blockmodel()`. Just as with the `blockmodel` command, we must indicate the number of desired partitions for CONCOR to return using the parameter `p`. 
 
 ```{r}
 #select partitions with concor
@@ -754,8 +756,8 @@ blk_mod <-
 #print blockmodel object
 blk_mod$block.model
 #plot blockmodel partitions
-plot.block(blk_mod, main = "Florentine Marriages, Concor 4 Partitions", cex.lab =
-             .5)
+plot.block(blk_mod, main = "Florentine Marriages, Concor 4 Partitions",
+           cex.lab = 0.5)
 #assign block membership to vertex attribute
 flomarr.stat %v% "role" <-
   blks$block[match(flomarr.stat %v% "vertex.names", blks$vertex)]
@@ -805,11 +807,11 @@ Using one of the alternative networks for the week, go through the position extr
 
 ## Optimization-based Partitions
 
-Much like CONCOR, criteron-based optimization can be used to directly partition a network into structurally equivalent positions. The different blockmodel ideals involving 0 and 1 blocks can be used to set a criteron function for optimization of a blockmodel of a particular network. Unfortunately, it is computationally impossible to directly optimize network partitions relative to a critereon. Instead, different algorithms, such as a tabu search or a nearest neighbor search, can be used and compared to the optimizaton critereon to select the best network partition.
+Much like CONCOR, criterion-based optimization can be used to directly partition a network into structurally equivalent positions. The different blockmodel ideals involving 0 and 1 blocks can be used to set a criterion function for optimization of a blockmodel of a particular network. Unfortunately, it is computationally impossible to directly optimize network partitions relative to a criterion. Instead, different algorithms, such as a tabu search or a nearest neighbor search, can be used and compared to the optimization criterion to select the best network partition.
 
-The package *blockmodeling* includes a function for  optimization-based partitioning of a network, `optRandomParC()`. This function generates multiple initial starting partitions randomly, with the number of starting partitions set by the parameter `rep=...`. As in other clustering functions, the number of desired partitions must be set using the parameter `k=...`. 
+The package *blockmodeling* includes a function for  optimization-based partitioning of a network, `optRandomParC()`. This function generates multiple initial starting partitions randomly, with the number of starting partitions set by the parameter `rep`. As in other clustering functions, the number of desired partitions must be set using the parameter `k`. 
 
-At least two additional parameter options are required to specify the criteron to be optimized. The `approaches=...` option specifies which of several approaches to use, such as "hom" or homogeneity blockmodeling, "bin" or binary blockmodeling, "ss" for sum of squares homogeneity blockmodeling, etc. The `blocks=...` option is a list of the desired block types, such as "com" for complete, "nul" for the empty block, etc.  For more details, see [Žiberna, Aleš (2007): Generalized Blockmodeling of Valued Networks. Social Networks, Jan. 2007, vol. 29, no. 1, 105-126.](https://doi-org.silk.library.umass.edu/10.1016/j.socnet.2006.04.002)
+At least two additional parameter options are required to specify the criterion to be optimized. The `approaches` option specifies which of several approaches to use, such as "hom" or homogeneity blockmodeling, "bin" or binary blockmodeling, "ss" for sum of squares homogeneity blockmodeling, etc. The `blocks` option is a list of the desired block types, such as "com" for complete, "nul" for the empty block, etc.  For more details, see [Žiberna, Aleš (2007): Generalized Blockmodeling of Valued Networks. Social Networks, Jan. 2007, vol. 29, no. 1, 105-126.](https://doi-org.silk.library.umass.edu/10.1016/j.socnet.2006.04.002)
 
 ```{r, out.width="100%"}
 #select partitions with optimization
@@ -827,8 +829,8 @@ blk_mod <-
 #print blockmodel object
 blk_mod$block.model
 #plot blockmodel partitions
-plot.block(blk_mod, main = "Florentine Marriages, Optimized 5 Partitions", cex.lab =
-             .5)
+plot.block(blk_mod, main = "Florentine Marriages, Optimized 5 Partitions", 
+           cex.lab = 0.5)
 #assign block membership to vertex attribute
 flomarr.stat %v% "role" <-
   blk_mod$block.membership[match(flomarr.stat %v% "vertex.names", blk_mod$plabels)]
@@ -842,11 +844,11 @@ GGally::ggnet2(
 )
 ```
 
-A long list of other options are available, see the help file (online or in R) for more details. Note that the optimization routine is computationally intensive, and large networks (over 100 vertices) can take hours or even days.
+A long list of other options are available; see the help file (online or in R) for more details. Note that the optimization routine is computationally intensive, and large networks (over 100 vertices) can take hours or even days to process.
 
 ### Exercise: Optimization
 
-Using one of the alternative networks for the week, go through the position extraction routine using criteron-based partition optimization. How do the resulting network partitions compare to the ones identified using other approaches? Can you interpret any differences you find in the position of specific nodes? You may want to experiment with changes in the options for `k=...`, `approaches=" "`, or perhaps using a pre-specified partition set using a different partitioning method or perhaps measures of network centrality such as derived and reflected centrality or gould-fernandez brokerage that approximate network position or role.
+Using one of the alternative networks for the week, go through the position extraction routine using criterion-based partition optimization. How do the resulting network partitions compare to the ones identified using other approaches? Can you interpret any differences you find in the position of specific nodes? You may want to experiment with changes in the options for `k`, `approaches`, using a pre-specified partition set using a different partitioning method, or perhaps measures of network centrality such as derived and reflected centrality or Gould-Fernandez brokerage that approximate network position or role.
 
 ```{r criterion, exercise=TRUE, exercise.lines=12}
 #select partitions with optimization
@@ -893,6 +895,6 @@ flomarr.re <-
 plot(flomarr.re, labels = flomarr.se$glabels)
 ```
 
-The issue that can clearly be seen is that regular equivalence is pretty uninteresting, at least for an unweighted and undirected graph. One option is to set the option `seed.partition=...` and provide an initial equivalence partition to serve as a starting point for the algorithm - perhaps a partition obtained using one of the other approaches provided earlier. 
+The issue that can clearly be seen is that regular equivalence is pretty uninteresting, at least for an unweighted and undirected graph. One option is to set the option `seed.partition` and provide an initial equivalence partition to serve as a starting point for the algorithm - perhaps a partition obtained using one of the other approaches provided earlier. 
 
-The REGE algorithm is availble in the blockmodeling package by calling `REGE(...)` and providing a matrix. This algorithm works with valued or weighted networks, but like CATREGE the results are uninteresting for unweighted and undirected networks.
+The REGE algorithm is available in the blockmodeling package by calling `REGE(...)` and providing a matrix. This algorithm works with valued or weighted networks, but like CATREGE, the results are uninteresting for unweighted and undirected networks.
