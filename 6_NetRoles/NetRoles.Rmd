@@ -604,7 +604,7 @@ flomarr.nodes %>%
 
 ### Exercise: Roles & Centrality
 
-```{r roles and cent, exercise=TRUE}
+```{r roles_and_cent, exercise=TRUE}
 #Repeat the block modeling exercise for a dataset of your choice
 
 #see part 3 of basic network structure to create a .nodes dataframe
@@ -613,7 +613,7 @@ flomarr.nodes %>%
 ```
 
 
-```{r roles and cent-solution}
+```{r roles_and_cent-solution}
 #Repeat the block modeling exercise for a dataset of your choice
 blk_mod <- blockmodel(gotmarr.stat, gotmarr.se, k = 5)
 V(gotmarr.ig)$role <-
