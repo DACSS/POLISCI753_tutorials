@@ -488,15 +488,15 @@ For now, lets see the results of all 5 methods.
 
 ```{r}
 #compare community partitions using variation of information
-compare(comm.fg,comm.wt,method="vi")
+compare(comm.fg, comm.wt, method = "vi")
 #compare community partitions using normalized mutual information
-compare(comm.fg,comm.wt,method="nmi")
+compare(comm.fg, comm.wt, method = "nmi")
 #compare community partitions using split join distance
-compare(comm.fg,comm.wt,method="split.join")
+compare(comm.fg, comm.wt, method = "split.join")
 #compare community partitions using Rand index
-compare(comm.fg,comm.wt,method="rand")
+compare(comm.fg, comm.wt, method = "rand")
 #compare community partitions using adjusted Rand index
-compare(comm.fg,comm.wt,method="adjusted.rand")
+compare(comm.fg, comm.wt, method = "adjusted.rand")
 ```
 
 One thing to notice comparing the two Rand index measures is that the adjusted one is much lower than the standard measure not adjusted for random variation in clustering. The two partitions appear to be fairly similar based on the Rand index, but less so once random variation is taken into account. In and of itself, the comparison scores don't tell us which method is better - but they do provide a sense of how similar the partitions produced by two methods are - and thus can be useful when comparing the results of a specific partitioning approach to a gold standard partition.
@@ -504,25 +504,35 @@ One thing to notice comparing the two Rand index measures is that the adjusted o
 Finally, note that once again, the code in the previous R snippet will start to grow much longer as we try to compare additional community partition algorithms. An alternative is to use a custom function that uses `expand.grid` in combination with a `for()` loop to quickly cycle through multiple combinations and calculate the comparative metrics.
 
 ```{r}
-compare.algs<-function(alg.a,alg.b,compare.meth=c("vi", "nmi", "split.join", "rand", "adjusted.rand")){
-  #create list of community objects and methods
-  comm.compare<-expand.grid(alg.a=alg.a, alg.b=alg.b, meth=compare.meth, result=NA, stringsAsFactors = FALSE)
-  #compare community partitions using a loop
-for(i in 1:nrow(comm.compare)){
-  comm1<-get(comm.compare$alg.a[i])
-  comm2<-get(comm.compare$alg.b[i])
-  method<-comm.compare$meth[i]
-  comm.compare$result[i]<-compare(comm1, comm2, method)
-}
-  return(comm.compare)
-}
+compare.algs <-
+  function(alg.a,
+           alg.b,
+           compare.meth = c("vi", "nmi", "split.join", "rand", "adjusted.rand")) {
+    #create list of community objects and methods
+    comm.compare <-
+      expand.grid(
+        alg.a = alg.a,
+        alg.b = alg.b,
+        meth = compare.meth,
+        result = NA,
+        stringsAsFactors = FALSE
+      )
+    #compare community partitions using a loop
+    for (i in 1:nrow(comm.compare)) {
+      comm1 <- get(comm.compare$alg.a[i])
+      comm2 <- get(comm.compare$alg.b[i])
+      method <- comm.compare$meth[i]
+      comm.compare$result[i] <- compare(comm1, comm2, method)
+    }
+    return(comm.compare)
+  }
 ```
 
 Once the `compare.algs()` function is set up, all you need to do is provide it with a vector of the community object names (alg.a) that you wish to compare to the baseline community partition (alg.b). Note that you can decide which methods to use to compare partitions. By default, the `compare.algs` function currently returns all 5 available metrics.
 
 ```{r}
 #compare community partitions
-compare.algs(alg.a=c("comm.fg"),alg.b="comm.wt")
+compare.algs(alg.a = c("comm.fg"), alg.b = "comm.wt")
 ```
 
 ###Exercise: Compare two partitions
@@ -538,28 +548,34 @@ Compare the fast, greedy partition to the walktrap partition you created using y
 
 ```{r compare-solution}
 #collect modularity scores to compare
-mods<-c(fastgreedy=modularity(got.fg), walktrap=modularity(got.wt))
+mods <- c(fastgreedy = modularity(got.fg), walktrap = modularity(got.wt))
 mods
 #compare community partitions
-compare.algs(alg.a=c("got.fg"),alg.b="got.wt")
+compare.algs(alg.a = c("got.fg"), alg.b = "got.wt")
 
 #alliances
-alliances.mods<-c(fastgreedy=modularity(alliances.fg), walktrap=modularity(alliances.wt))
+alliances.mods <-
+  c(fastgreedy = modularity(alliances.fg),
+    walktrap = modularity(alliances.wt))
 alliances.mods
 #compare community partitions
-compare.algs(alg.a=c("alliances.fg"),alg.b="alliances.wt")
+compare.algs(alg.a = c("alliances.fg"), alg.b = "alliances.wt")
 
 #airports.flights
-mods<-c(fastgreedy=modularity(airports.fl.fg), walktrap=modularity(airports.fl.wt))
+mods <-
+  c(fastgreedy = modularity(airports.fl.fg),
+    walktrap = modularity(airports.fl.wt))
 mods
 #compare community partitions
-compare.algs(alg.a=c("airports.fl.fg"),alg.b="airports.fl.wt")
+compare.algs(alg.a = c("airports.fl.fg"), alg.b = "airports.fl.wt")
 
 #airports.geograph
-mods<-c(fastgreedy=modularity(airports.geo.fg), walktrap=modularity(airports.geo.wt))
+mods <-
+  c(fastgreedy = modularity(airports.geo.fg),
+    walktrap = modularity(airports.geo.wt))
 mods
 #compare community partitions
-compare.algs(alg.a=c("airports.geo.fg"),alg.b="airports.geo.wt")
+compare.algs(alg.a = c("airports.geo.fg"), alg.b = "airports.geo.wt")
 
 ```
 
@@ -569,7 +585,7 @@ Label propogation is a fast algorithm that uses neighborhood voting to find comm
 
 ```{r}
 #Run clustering algorithm: leading label
-comm.lab<-label.propagation.community(flomarr.ig)
+comm.lab <- label.propagation.community(flomarr.ig)
 #Inspect community membership
 igraph::groups(comm.lab)
 ```
@@ -578,23 +594,24 @@ We can describe and plot the label propagation communities.
 
 ```{r}
 #inspect density of between/within community ties
-print(blockmodel(flomarr.stat,comm.lab$membership)$block.model, digits=2)
+print(blockmodel(flomarr.stat, comm.lab$membership)$block.model,
+      digits = 2)
 #add community membership as a vertex attribute
-flomarr.nodes$comm.lab<-comm.lab$membership
+flomarr.nodes$comm.lab <- comm.lab$membership
 #summarize node statistics by community
-nodes.by.gp(flomarr.nodes,"comm.lab")
+nodes.by.gp(flomarr.nodes, "comm.lab")
 #plot network with community coloring
-plot(comm.lab,flomarr.ig)
+plot(comm.lab, flomarr.ig)
 ```
 
 Finally, lets compare the different community partitions. Note that you can use the `c()` function to just add a new item, the modularity index of our new community partition, to the vector of modularity scores, *mods*. Similarly, we just add the two previous algorithms to the *alg.a* vector, and then set the new algorithm to be *alg.b*.
 
 ```{r}
 #collect modularity scores to compare
-mods<-c(mods, label=modularity(comm.lab))
+mods <- c(mods, label = modularity(comm.lab))
 mods
 #compare community partitions
-compare.algs(alg.a=c("comm.fg","comm.wt"),alg.b="comm.lab")
+compare.algs(alg.a = c("comm.fg", "comm.wt"), alg.b = "comm.lab")
 ```
 
 ###Exercise: Leading Label Propagation
@@ -622,55 +639,62 @@ Repeat the basic community analysis routine for one of the other datasets provid
 
 ```{r labprop-solution}
 #Run clustering algorithm: leading label
-got.lab<-walktrap.community(gotmarr.ig)
+got.lab <- walktrap.community(gotmarr.ig)
 #Inspect community membership
 igraph::groups(got.lab)
 #inspect density of between/within community ties
-print(blockmodel(gotmarr.stat,got.lab$membership)$block.model, digits=2)
+print(blockmodel(gotmarr.stat, got.lab$membership)$block.model,
+      digits = 2)
 #add community membership as a vertex attribute
-gotmarr.nodes$comm.lab<-got.lab$membership
+gotmarr.nodes$comm.lab <- got.lab$membership
 #summarize node statistics by community
-nodes.by.gp(gotmarr.nodes,"comm.lab")
+nodes.by.gp(gotmarr.nodes, "comm.lab")
 #plot the network with community coloring
-plot(got.lab,gotmarr.ig)
+plot(got.lab, gotmarr.ig)
 #collect modularity scores to compare
-mods<-c(mods, label=modularity(comm.lab))
+mods <- c(mods, label = modularity(comm.lab))
 mods
 #compare community partitions
-compare.algs(alg.a=c("got.fg","got.wt"),alg.b="got.lab")
+compare.algs(alg.a = c("got.fg", "got.wt"), alg.b = "got.lab")
 
 #alliances
-alliances.lab<-walktrap.community(alliances.ig)
+alliances.lab <- walktrap.community(alliances.ig)
 igraph::groups(alliances.lab)
-print(blockmodel(alliances.stat,alliances.lab$membership)$block.model, digits=2)
-alliances.nodes$comm.lab<-alliances.lab$membership
-nodes.by.gp(alliances.nodes,"comm.lab")
-plot(alliances.lab,alliances.ig)
-mods<-c(mods, label=modularity(comm.lab))
+print(blockmodel(alliances.stat, alliances.lab$membership)$block.model,
+      digits = 2)
+alliances.nodes$comm.lab <- alliances.lab$membership
+nodes.by.gp(alliances.nodes, "comm.lab")
+plot(alliances.lab, alliances.ig)
+mods <- c(mods, label = modularity(comm.lab))
 mods
-compare.algs(alg.a=c("alliances.fg","alliances.wt"),alg.b="alliances.lab")
+compare.algs(alg.a = c("alliances.fg", "alliances.wt"),
+             alg.b = "alliances.lab")
 
 #airport flights
-airports.fl.lab<-walktrap.community(airports.fl.ig)
+airports.fl.lab <- walktrap.community(airports.fl.ig)
 igraph::groups(airports.fl.lab)
-print(blockmodel(airports.fl.stat,airports.fl.lab$membership)$block.model, digits=2)
-airports.fl.nodes$comm.lab<-airports.fl.lab$membership
-nodes.by.gp(airports.fl.nodes,"comm.lab")
-plot(airports.fl.lab,airports.fl.ig)
-mods<-c(mods, label=modularity(comm.lab))
+print(blockmodel(airports.fl.stat, airports.fl.lab$membership)$block.model,
+      digits = 2)
+airports.fl.nodes$comm.lab <- airports.fl.lab$membership
+nodes.by.gp(airports.fl.nodes, "comm.lab")
+plot(airports.fl.lab, airports.fl.ig)
+mods <- c(mods, label = modularity(comm.lab))
 mods
-compare.algs(alg.a=c("airports.fl.fg","airports.fl.wt"),alg.b="airports.fl.lab")
+compare.algs(alg.a = c("airports.fl.fg", "airports.fl.wt"),
+             alg.b = "airports.fl.lab")
 
 #airport geography
-airports.geo.lab<-walktrap.community(airports.geo.ig)
+airports.geo.lab <- walktrap.community(airports.geo.ig)
 igraph::groups(airports.geo.lab)
-print(blockmodel(airports.geo.stat,airports.geo.lab$membership)$block.model, digits=2)
-airports.geo.nodes$comm.lab<-airports.geo.lab$membership
-nodes.by.gp(airports.geo.nodes,"comm.lab")
-plot(airports.geo.lab,airports.geo.ig)
-mods<-c(mods, label=modularity(comm.lab))
+print(blockmodel(airports.geo.stat, airports.geo.lab$membership)$block.model,
+      digits = 2)
+airports.geo.nodes$comm.lab <- airports.geo.lab$membership
+nodes.by.gp(airports.geo.nodes, "comm.lab")
+plot(airports.geo.lab, airports.geo.ig)
+mods <- c(mods, label = modularity(comm.lab))
 mods
-compare.algs(alg.a=c("airports.geo.fg","airports.geo.wt"),alg.b="airports.geo.lab")
+compare.algs(alg.a = c("airports.geo.fg", "airports.geo.wt"),
+             alg.b = "airports.geo.lab")
 
 ```
 
@@ -680,7 +704,7 @@ Edge betweenness looks for communities with sparse connections between them and 
 
 ```{r}
 #Run clustering algorithm: edge betweenness
-comm.edge<-label.propagation.community(flomarr.ig)
+comm.edge <- label.propagation.community(flomarr.ig)
 #Inspect community membership
 igraph::groups(comm.edge)
 ```
@@ -689,23 +713,25 @@ We can describe and plot the edge betweenness communities.
 
 ```{r}
 #inspect density of between/within community ties
-print(blockmodel(flomarr.stat,comm.edge$membership)$block.model, digits=2)
+print(blockmodel(flomarr.stat, comm.edge$membership)$block.model,
+      digits = 2)
 #add community membership as a vertex attribute
-flomarr.nodes$comm.edge<-comm.edge$membership
+flomarr.nodes$comm.edge <- comm.edge$membership
 #summarize node statistics by community
-nodes.by.gp(flomarr.nodes,"comm.edge")
+nodes.by.gp(flomarr.nodes, "comm.edge")
 #plot network with community coloring
-plot(comm.edge,flomarr.ig)
+plot(comm.edge, flomarr.ig)
 ```
 
 Compare the various community partitions created so far by adding to the modularity index vector and using our custom function.
 
 ```{r}
 #collect modularity scores to compare
-mods<-c(mods, edge=modularity(comm.edge))
+mods <- c(mods, edge = modularity(comm.edge))
 mods
 #compare community partitions
-compare.algs(alg.a=c("comm.fg","comm.wt", "comm.lab"), alg.b="comm.edge")
+compare.algs(alg.a = c("comm.fg", "comm.wt", "comm.lab"),
+             alg.b = "comm.edge")
 ```
 
 ###Exercise: Edge Betweenness
@@ -733,55 +759,69 @@ Repeat the basic community analysis routine for one of the other datasets provid
 
 ```{r between-solution}
 #Run clustering algorithm: edge betweenness
-got.edge<-edge.betweenness.community(gotmarr.ig)
+got.edge <- edge.betweenness.community(gotmarr.ig)
 #Inspect community membership
 igraph::groups(got.edge)
 #inspect density of between/within community ties
-print(blockmodel(gotmarr.stat,got.edge$membership)$block.model, digits=2)
+print(blockmodel(gotmarr.stat, got.edge$membership)$block.model,
+      digits = 2)
 #add community membership as a vertex attribute
-gotmarr.nodes$comm.edge<-got.edge$membership
+gotmarr.nodes$comm.edge <- got.edge$membership
 #summarize node statistics by community
-nodes.by.gp(gotmarr.nodes,"comm.edge")
+nodes.by.gp(gotmarr.nodes, "comm.edge")
 #plot the network with community coloring
-plot(got.edge,gotmarr.ig)
+plot(got.edge, gotmarr.ig)
 #collect modularity scores to compare
-mods<-c(mods, edge=modularity(comm.edge))
+mods <- c(mods, edge = modularity(comm.edge))
 mods
 #compare community partitions
-compare.algs(alg.a=c("got.fg","got.wt", "got.lab"),alg.b="got.edge")
+compare.algs(alg.a = c("got.fg", "got.wt", "got.lab"),
+             alg.b = "got.edge")
 
 #alliances
-alliances.edge<-edge.betweenness.community(alliances.ig)
+alliances.edge <- edge.betweenness.community(alliances.ig)
 igraph::groups(alliances.edge)
-print(blockmodel(alliances.stat,alliances.edge$membership)$block.model, digits=2)
-alliances.nodes$comm.edge<-alliances.edge$membership
-nodes.by.gp(alliances.nodes,"comm.edge")
-plot(alliances.edge,alliances.ig)
-mods<-c(mods, edge=modularity(comm.edge))
+print(blockmodel(alliances.stat, alliances.edge$membership)$block.model,
+      digits = 2)
+alliances.nodes$comm.edge <- alliances.edge$membership
+nodes.by.gp(alliances.nodes, "comm.edge")
+plot(alliances.edge, alliances.ig)
+mods <- c(mods, edge = modularity(comm.edge))
 mods
-compare.algs(alg.a=c("alliances.fg","alliances.wt", "alliances.lab"), alg.b="alliances.edge")
+compare.algs(
+  alg.a = c("alliances.fg", "alliances.wt", "alliances.lab"),
+  alg.b = "alliances.edge"
+)
 
 #airport flights
-airports.fl.edge<-edge.betweenness.community(airports.fl.ig)
+airports.fl.edge <- edge.betweenness.community(airports.fl.ig)
 igraph::groups(airports.fl.edge)
-print(blockmodel(airports.fl.stat,airports.fl.edge$membership)$block.model, digits=2)
-airports.fl.nodes$comm.edge<-airports.fl.edge$membership
-nodes.by.gp(airports.fl.nodes,"comm.edge")
-plot(airports.fl.edge,airports.fl.ig)
-mods<-c(mods, edge=modularity(comm.edge))
+print(blockmodel(airports.fl.stat, airports.fl.edge$membership)$block.model,
+      digits = 2)
+airports.fl.nodes$comm.edge <- airports.fl.edge$membership
+nodes.by.gp(airports.fl.nodes, "comm.edge")
+plot(airports.fl.edge, airports.fl.ig)
+mods <- c(mods, edge = modularity(comm.edge))
 mods
-compare.algs(alg.a=c("airports.fl.fg","airports.fl.wt", "airports.fl.lab"), alg.b="airports.fl.edge")
+compare.algs(
+  alg.a = c("airports.fl.fg", "airports.fl.wt", "airports.fl.lab"),
+  alg.b = "airports.fl.edge"
+)
 
 #airport geography
-airports.geo.edge<-edge.betweenness.community(airports.geo.ig)
+airports.geo.edge <- edge.betweenness.community(airports.geo.ig)
 igraph::groups(airports.geo.edge)
-print(blockmodel(airports.geo.stat,airports.geo.edge$membership)$block.model, digits=2)
-airports.geo.nodes$comm.edge<-airports.geo.edge$membership
-nodes.by.gp(airports.geo.nodes,"comm.edge")
-plot(airports.geo.edge,airports.geo.ig)
-mods<-c(mods, edge=modularity(comm.edge))
+print(blockmodel(airports.geo.stat, airports.geo.edge$membership)$block.model,
+      digits = 2)
+airports.geo.nodes$comm.edge <- airports.geo.edge$membership
+nodes.by.gp(airports.geo.nodes, "comm.edge")
+plot(airports.geo.edge, airports.geo.ig)
+mods <- c(mods, edge = modularity(comm.edge))
 mods
-compare.algs(alg.a=c("airports.geo.fg","airports.geo.wt", "airports.geo.lab"), alg.b="airports.geo.edge")
+compare.algs(
+  alg.a = c("airports.geo.fg", "airports.geo.wt", "airports.geo.lab"),
+  alg.b = "airports.geo.edge"
+)
 
 ```
 
@@ -791,7 +831,7 @@ The leading eigenvector community detection method is based on the eigenvectors 
 
 ```{r}
 #Run clustering algorithm: leading eigenvector
-comm.eigen<-leading.eigenvector.community(flomarr.ig)
+comm.eigen <- leading.eigenvector.community(flomarr.ig)
 #Inspect community membership
 igraph::groups(comm.eigen)
 ```
@@ -800,23 +840,26 @@ We can describe and plot the leading eigenvector communities.
 
 ```{r}
 #inspect density of between/within community ties
-print(blockmodel(flomarr.stat,comm.eigen$membership)$block.model, digits=2)
+print(blockmodel(flomarr.stat, comm.eigen$membership)$block.model,
+      digits = 2)
 #add community membership as a vertex attribute
-flomarr.nodes$comm.eigen<-comm.eigen$membership
+flomarr.nodes$comm.eigen <- comm.eigen$membership
 #summarize node statistics by community
-nodes.by.gp(flomarr.nodes,"comm.eigen")
+nodes.by.gp(flomarr.nodes, "comm.eigen")
 #plot network with community coloring
-plot(comm.eigen,flomarr.ig)
+plot(comm.eigen, flomarr.ig)
 ```
 
 Compare the various community partitions created so far by adding to the modularity index and using our custom function.
 
 ```{r}
 #collect modularity scores to compare
-mods<-c(mods, eigen=modularity(comm.eigen))
+mods <- c(mods, eigen = modularity(comm.eigen))
 mods
 #compare community partitions
-compare.algs(alg.a=c("comm.fg","comm.wt", "comm.lab", "comm.edge"), alg.b="comm.eigen")
+
+compare.algs(alg.a = c("comm.fg", "comm.wt", "comm.lab", "comm.edge"),
+             alg.b = "comm.eigen")
 ```
 
 ###Exercise: Eigenvector Communities
@@ -844,55 +887,86 @@ Repeat the basic community analysis routine for one of the other datasets provid
 
 ```{r eigen-solution}
 #Run clustering algorithm: leading eigenvector
-got.eigen<-leading.eigenvector.community(gotmarr.ig)
+got.eigen <- leading.eigenvector.community(gotmarr.ig)
 #Inspect community membership
 igraph::groups(got.eigen)
 #inspect density of between/within community ties
-print(blockmodel(gotmarr.stat,got.eigen$membership)$block.model, digits=2)
+print(blockmodel(gotmarr.stat, got.eigen$membership)$block.model,
+      digits = 2)
 #add community membership as a vertex attribute
-gotmarr.nodes$comm.eigen<-got.eigen$membership
+gotmarr.nodes$comm.eigen <- got.eigen$membership
 #summarize node statistics by community
-nodes.by.gp(gotmarr.nodes,"comm.eigen")
+nodes.by.gp(gotmarr.nodes, "comm.eigen")
 #plot the network with community coloring
-plot(got.eigen,gotmarr.ig)
+plot(got.eigen, gotmarr.ig)
 #collect modularity scores to compare
-mods<-c(mods, eigen=modularity(comm.eigen))
+mods <- c(mods, eigen = modularity(comm.eigen))
 mods
 #compare community partitions
-compare.algs(alg.a=c("got.fg","got.wt", "got.lab", "got.edge"), alg.b="got.eigen")
+compare.algs(alg.a = c("got.fg", "got.wt", "got.lab", "got.edge"),
+             alg.b = "got.eigen")
 
 #alliances
-alliances.eigen<-leading.eigenvector.community(alliances.ig)
+alliances.eigen <- leading.eigenvector.community(alliances.ig)
 igraph::groups(alliances.eigen)
-print(blockmodel(alliances.stat,alliances.eigen$membership)$block.model, digits=2)
-alliances.nodes$comm.eigen<-alliances.eigen$membership
-nodes.by.gp(alliances.nodes,"comm.eigen")
-plot(alliances.eigen,alliances.ig)
-mods<-c(mods, eigen=modularity(comm.eigen))
+print(blockmodel(alliances.stat, alliances.eigen$membership)$block.model,
+      digits = 2)
+alliances.nodes$comm.eigen <- alliances.eigen$membership
+nodes.by.gp(alliances.nodes, "comm.eigen")
+plot(alliances.eigen, alliances.ig)
+mods <- c(mods, eigen = modularity(comm.eigen))
 mods
-compare.algs(alg.a=c("alliances.fg","alliances.wt", "alliances.lab", "alliances.edge"), alg.b="alliances.eigen")
+compare.algs(
+  alg.a = c(
+    "alliances.fg",
+    "alliances.wt",
+    "alliances.lab",
+    "alliances.edge"
+  ),
+  alg.b = "alliances.eigen"
+)
 
 #airport flights
-airports.fl.eigen<-leading.eigenvector.community(airports.fl.ig)
+airports.fl.eigen <- leading.eigenvector.community(airports.fl.ig)
 igraph::groups(airports.fl.eigen)
-print(blockmodel(airports.fl.stat,airports.fl.eigen$membership)$block.model, digits=2)
-airports.fl.nodes$comm.eigen<-airports.fl.eigen$membership
-nodes.by.gp(airports.fl.nodes,"comm.eigen")
-plot(airports.fl.eigen,airports.fl.ig)
-mods<-c(mods, eigen=modularity(comm.eigen))
+print(blockmodel(airports.fl.stat, airports.fl.eigen$membership)$block.model,
+      digits = 2)
+airports.fl.nodes$comm.eigen <- airports.fl.eigen$membership
+nodes.by.gp(airports.fl.nodes, "comm.eigen")
+plot(airports.fl.eigen, airports.fl.ig)
+mods <- c(mods, eigen = modularity(comm.eigen))
 mods
-compare.algs(alg.a=c("airports.fl.fg","airports.fl.wt", "airports.fl.lab", "airports.fl.edge"), alg.b="airports.fl.eigen")
+compare.algs(
+  alg.a = c(
+    "airports.fl.fg",
+    "airports.fl.wt",
+    "airports.fl.lab",
+    "airports.fl.edge"
+  ),
+  alg.b = "airports.fl.eigen"
+)
 
 #airport geography
-airports.geo.eigen<-leading.eigenvector.community(airports.geo.ig)
+airports.geo.eigen <- leading.eigenvector.community(airports.geo.ig)
 igraph::groups(airports.geo.eigen)
-print(blockmodel(airports.geo.stat,airports.geo.eigen$membership)$block.model, digits=2)
-airports.geo.nodes$comm.eigen<-airports.geo.eigen$membership
-nodes.by.gp(airports.geo.nodes,"comm.eigen")
-plot(airports.geo.eigen,airports.geo.ig)
-mods<-c(mods, eigen=modularity(comm.eigen))
+print(
+  blockmodel(airports.geo.stat, airports.geo.eigen$membership)$block.model,
+  digits = 2
+)
+airports.geo.nodes$comm.eigen <- airports.geo.eigen$membership
+nodes.by.gp(airports.geo.nodes, "comm.eigen")
+plot(airports.geo.eigen, airports.geo.ig)
+mods <- c(mods, eigen = modularity(comm.eigen))
 mods
-compare.algs(alg.a=c("airports.geo.fg","airports.geo.wt", "airports.geo.lab", "airports.geo.edge"), alg.b="airports.geo.eigen")
+compare.algs(
+  alg.a = c(
+    "airports.geo.fg",
+    "airports.geo.wt",
+    "airports.geo.lab",
+    "airports.geo.edge"
+  ),
+  alg.b = "airports.geo.eigen"
+)
 
 ```
 
@@ -908,12 +982,12 @@ giant.component <- function(graph) {
 
 ```{r}
 #extract giant component
-flomarr.giant<-giant.component(flomarr.ig)
+flomarr.giant <- giant.component(flomarr.ig)
 ```
 
 ```{r}
 #Run clustering algorithm: spinglass
-comm.spin<-spinglass.community(flomarr.giant)
+comm.spin <- spinglass.community(flomarr.giant)
 #Inspect community membership
 igraph::groups(comm.spin)
 ```
@@ -922,20 +996,22 @@ We can describe and plot the spinglass communities. Note the changes to the line
 
 ```{r}
 #inspect density of between/within community ties
-print(blockmodel(flomarr.stat,comm.spin$membership)$block.model, digits=2)
+print(blockmodel(flomarr.stat, comm.spin$membership)$block.model,
+      digits = 2)
 #add community membership as a vertex attribute
-flomarr.nodes$comm.spin[which(flomarr.nodes$name%in%V(flomarr.giant)$name)]<-comm.spin$membership
+flomarr.nodes$comm.spin[which(flomarr.nodes$name %in% V(flomarr.giant)$name)] <-
+  comm.spin$membership
 #summarize node statistics by community
-nodes.by.gp(flomarr.nodes,"comm.spin")
+nodes.by.gp(flomarr.nodes, "comm.spin")
 #plot network with community coloring
-plot(comm.spin,flomarr.ig)
+plot(comm.spin, flomarr.ig)
 ```
 
 Compare the various community partitions created so far. Because the original network was not connected and we had to extract a giant component, comparing the partitions using our custom `compare.alg` function would require additional steps to make the partitions comparable (i.e., have the same number of nodes.) This is not done in this tutorial, but could be done if required.
 
 ```{r}
 #collect modularity scores to compare
-mods<-c(mods, eigen=modularity(comm.spin))
+mods <- c(mods, eigen = modularity(comm.spin))
 mods
 #compare community partitions - not connected
 ```
@@ -965,56 +1041,83 @@ Repeat the basic community analysis routine for one of the other datasets provid
 
 ```{r spinglass-solution}
 #Run clustering algorithm: spinglass
-got.spin<-spinglass.community(gotmarr.ig)
+got.spin <- spinglass.community(gotmarr.ig)
 #Inspect community membership
 igraph::groups(got.spin)
 #inspect density of between/within community ties
-print(blockmodel(gotmarr.stat,got.spin$membership)$block.model, digits=2)
+print(blockmodel(gotmarr.stat, got.spin$membership)$block.model,
+      digits = 2)
 #add community membership as a vertex attribute
-got.nodes$comm.spin<-got.spin$membership
+got.nodes$comm.spin <- got.spin$membership
 #summarize node statistics by community
-nodes.by.gp(gotmarr.nodes,"comm.spin")
+nodes.by.gp(gotmarr.nodes, "comm.spin")
 #plot the network with community coloring
-plot(got.spin,gotmarr.ig)
+plot(got.spin, gotmarr.ig)
 #collect modularity scores to compare
-mods<-c(mods, spin=modularity(comm.spin))
+mods <- c(mods, spin = modularity(comm.spin))
 mods
 #compare community partitions
-compare.algs(alg.a=c("got.fg","got.wt", "got.lab", "got.edge", "got.eigen"), alg.b="got.spin")
+compare.algs(
+  alg.a = c("got.fg", "got.wt", "got.lab", "got.edge", "got.eigen"),
+  alg.b = "got.spin"
+)
 
 #alliances
 #extract giant component
-alliances.giant<-giant.component(alliances.ig)
-alliances.spin<-spinglass.community(alliances.giant)
+alliances.giant <- giant.component(alliances.ig)
+alliances.spin <- spinglass.community(alliances.giant)
 igraph::groups(alliances.spin)
-print(blockmodel(alliances.stat,alliances.spin$membership)$block.model, digits=2)
-alliances.nodes$comm.spin[which(alliances.nodes$name%in%V(alliances.giant)$name)]<-alliances.spin$membership
-nodes.by.gp(alliances.nodes,"comm.spin")
-plot(alliances.spin,alliances.ig)
-mods<-c(mods, spin=modularity(comm.spin))
+print(blockmodel(alliances.stat, alliances.spin$membership)$block.model,
+      digits = 2)
+alliances.nodes$comm.spin[which(alliances.nodes$name %in% V(alliances.giant)$name)] <-
+  alliances.spin$membership
+nodes.by.gp(alliances.nodes, "comm.spin")
+plot(alliances.spin, alliances.ig)
+mods <- c(mods, spin = modularity(comm.spin))
 mods
 
 #airport flights
-airports.fl.spin<-spinglass.community(airports.fl.ig)
+airports.fl.spin <- spinglass.community(airports.fl.ig)
 igraph::groups(airports.fl.spin)
-print(blockmodel(airports.fl.stat,airports.fl.spin$membership)$block.model, digits=2)
-airports.fl.nodes$comm.spin<-airports.fl.spin$membership
-nodes.by.gp(airports.fl.nodes,"comm.spin")
-plot(airports.fl.spin,airports.fl.ig)
-mods<-c(mods, spin=modularity(comm.spin))
+print(blockmodel(airports.fl.stat, airports.fl.spin$membership)$block.model,
+      digits = 2)
+airports.fl.nodes$comm.spin <- airports.fl.spin$membership
+nodes.by.gp(airports.fl.nodes, "comm.spin")
+plot(airports.fl.spin, airports.fl.ig)
+mods <- c(mods, spin = modularity(comm.spin))
 mods
-compare.algs(alg.a=c("airports.fl.fg","airports.fl.wt", "airports.fl.lab", "airports.fl.edge", "airports.fl.eigen"), alg.b="airports.fl.spin")
+compare.algs(
+  alg.a = c(
+    "airports.fl.fg",
+    "airports.fl.wt",
+    "airports.fl.lab",
+    "airports.fl.edge",
+    "airports.fl.eigen"
+  ),
+  alg.b = "airports.fl.spin"
+)
+
 
 #airport geography
-airports.geo.spin<-spinglass.community(airports.geo.ig)
+airports.geo.spin <- spinglass.community(airports.geo.ig)
 igraph::groups(airports.geo.spin)
-print(blockmodel(airports.geo.stat,airports.geo.spin$membership)$block.model, digits=2)
-airports.geo.nodes$comm.spin<-airports.geo.spin$membership
-nodes.by.gp(airports.geo.nodes,"comm.spin")
-plot(airports.geo.spin,airports.geo.ig)
-mods<-c(mods, spin=modularity(comm.spin))
+print(blockmodel(airports.geo.stat, airports.geo.spin$membership)$block.model,
+      digits = 2)
+airports.geo.nodes$comm.spin <- airports.geo.spin$membership
+nodes.by.gp(airports.geo.nodes, "comm.spin")
+plot(airports.geo.spin, airports.geo.ig)
+mods <- c(mods, spin = modularity(comm.spin))
 mods
-compare.algs(alg.a=c("airports.geo.fg","airports.geo.wt", "airports.geo.lab", "airports.geo.edge", "airports.geo.eigen"), alg.b="airports.geo.spin")
+compare.algs(
+  alg.a = c(
+    "airports.geo.fg",
+    "airports.geo.wt",
+    "airports.geo.lab",
+    "airports.geo.edge",
+    "airports.geo.eigen"
+  ),
+  alg.b = "airports.geo.spin"
+)
 
 ```
 
